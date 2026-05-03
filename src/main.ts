@@ -142,15 +142,7 @@ async function main() {
   const app = express();
 
   app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (/^https?:\/\/localhost(:\d+)?$/.test(origin) ||
-          origin === 'https://chatgpt.com' ||
-          origin === 'https://chat.openai.com') {
-        return callback(null, true);
-      }
-      callback(new Error('CORS not allowed'));
-    },
+    origin: true,
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'mcp-session-id', 'x-ghl-access-token', 'x-ghl-location-id'],
     credentials: true,
