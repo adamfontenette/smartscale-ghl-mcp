@@ -231,6 +231,7 @@ async function main() {
       }
 
       const server = createFreshServer(perRequestClient);
+            await server.connect(transport);
       await transport.handleRequest(req, res, req.body);
       // Clean up after the response finishes
       res.on('close', () => {
