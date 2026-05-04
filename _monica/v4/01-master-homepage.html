@@ -1,0 +1,407 @@
+<!--
+  Callis Luxury Travel — v4 Master Homepage (Atelier merge)
+  Aesthetic: rebuilt from the live Atelier design language Adam approved
+  Design tokens: --ink:#0a0806 / --cream:#f6efe3 / --gold:#c9a24a / --rust:#b25c2a
+  Type: Cormorant Garamond italic display + JetBrains Mono caps + Inter body
+  Content: v3 truthful (no InteleTravel/PlanNet specifics, no fake testimonials, no fabricated pricing)
+  Ops: wired to /trip-inquiry, /discovery-call, /privacy, /terms + GHL form widget YVMOVubNZNneNQmtmM2O
+  PASTE: GHL Sites → Custom HTML/Javascript element on a full-width section.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  .clt4 { --ink:#0a0806; --ink-2:#13100c; --ink-3:#1a1611; --cream:#f6efe3; --cream-2:#ebe1cd; --paper:#f1e9d9; --gold:#c9a24a; --gold-2:#e7c87b; --gold-3:#a8822f; --rust:#b25c2a; --line:rgba(201,162,74,0.18); --muted:#7a6f5e; --serif:'Cormorant Garamond', Georgia, serif; --sans:'Inter', 'Helvetica Neue', Arial, sans-serif; --mono:'JetBrains Mono', 'Courier New', monospace; background:var(--ink); color:var(--cream); font-family:var(--sans); font-weight:300; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .clt4 *, .clt4 *::before, .clt4 *::after { box-sizing:border-box; }
+  .clt4 a { color:inherit; text-decoration:none; }
+  .clt4 img { max-width:100%; display:block; }
+  .clt4 .mono { font-family:var(--mono); letter-spacing:0.18em; text-transform:uppercase; font-size:11px; font-weight:400; color:var(--gold); }
+  .clt4 .eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); display:inline-flex; align-items:center; gap:14px; }
+  .clt4 .eyebrow::before { content:""; width:30px; height:1px; background:var(--gold); }
+  .clt4 .display { font-family:var(--serif); font-style:italic; font-weight:400; line-height:1.02; letter-spacing:-0.01em; }
+  .clt4 .display em { font-style:italic; color:var(--gold-2); font-weight:500; }
+  .clt4 .h-section { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(38px,5.4vw,70px); line-height:1.05; margin:0; }
+  .clt4 .h-section em { color:var(--gold-2); font-weight:500; }
+  .clt4 .lede { font-size:16px; line-height:1.85; color:var(--cream); opacity:0.78; font-weight:300; }
+  .clt4 .btn { display:inline-flex; align-items:center; gap:8px; padding:16px 36px; border-radius:999px; font-family:var(--sans); font-weight:500; letter-spacing:0.16em; text-transform:uppercase; font-size:11px; transition:all .25s ease; cursor:pointer; border:1px solid var(--gold); }
+  .clt4 .btn-gold { background:var(--gold); color:var(--ink); border-color:var(--gold); }
+  .clt4 .btn-gold:hover { background:var(--gold-2); border-color:var(--gold-2); }
+  .clt4 .btn-ghost { background:transparent; color:var(--cream); }
+  .clt4 .btn-ghost:hover { background:rgba(201,162,74,0.10); }
+  .clt4 .btn .dot { width:6px; height:6px; border-radius:50%; background:currentColor; opacity:0.5; }
+  .clt4 .stats-bar { background:transparent; padding:18px 4%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--line); position:relative; z-index:6; }
+  .clt4 .stats-bar .left, .clt4 .stats-bar .right { display:flex; gap:32px; flex-wrap:wrap; }
+  .clt4 .stats-bar .v { color:var(--cream); opacity:0.55; }
+  .clt4 .nav { padding:24px 4% 18px; display:flex; align-items:center; justify-content:space-between; gap:18px; position:relative; z-index:6; }
+  .clt4 .logo { display:flex; align-items:center; gap:14px; }
+  .clt4 .logo .badge { width:48px; height:48px; border:1px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .clt4 .logo .badge span { font-family:var(--serif); font-style:italic; color:var(--gold); font-size:24px; line-height:1; }
+  .clt4 .logo .text { line-height:1; }
+  .clt4 .logo .text .top { font-family:var(--serif); font-style:italic; color:var(--cream); font-size:26px; }
+  .clt4 .logo .text .sub { font-family:var(--mono); font-size:10px; letter-spacing:0.32em; color:var(--cream); opacity:0.65; margin-top:6px; }
+  .clt4 .nav-links { display:flex; gap:38px; align-items:center; flex:1; justify-content:center; }
+  .clt4 .nav-links a { font-family:var(--serif); font-size:18px; font-weight:400; color:var(--cream); transition:color .2s; }
+  .clt4 .nav-links a:hover { color:var(--gold-2); }
+  .clt4 .nav-cta { padding:13px 28px; border:1px solid var(--gold); border-radius:999px; font-family:var(--mono); font-size:11px; letter-spacing:0.32em; color:var(--cream); display:inline-flex; align-items:center; gap:10px; }
+  .clt4 .nav-cta::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--gold-2); }
+  @media (max-width:880px) { .clt4 .nav-links { display:none; } }
+  .clt4 .hero { position:relative; min-height:88vh; padding:60px 4% 100px; background:linear-gradient(180deg, rgba(10,8,6,0.55) 0%, rgba(10,8,6,0.55) 50%, rgba(10,8,6,0.92) 100%), url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=2400&q=85') center/cover no-repeat; }
+  .clt4 .hero-eyebrow { padding:50px 0 24px; }
+  .clt4 .hero h1 { font-size:clamp(60px, 9vw, 132px); margin:0; max-width:1100px; }
+  .clt4 .hero-lede { max-width:780px; margin-top:30px; font-size:17px; line-height:1.85; color:var(--cream); opacity:0.82; font-weight:300; }
+  .clt4 .hero-cta { margin-top:42px; display:flex; gap:14px; flex-wrap:wrap; }
+  .clt4 .atelier { padding:120px 4%; background:var(--ink); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .clt4 .atelier-grid { display:grid; grid-template-columns:1fr 1.4fr; gap:60px; max-width:1200px; margin:0 auto; align-items:center; }
+  @media (max-width:880px) { .clt4 .atelier-grid { grid-template-columns:1fr; } }
+  .clt4 .atelier-photo { aspect-ratio:3/4; background-image:url('https://media-production.lp-cdn.com/media/02808d6d-9bc1-4ecf-a5db-db5852968d9b'); background-size:cover; background-position:center; }
+  .clt4 .atelier-photo.pink { background-image:url('https://storage.googleapis.com/msgsndr/SsSE4vahJ7wO1ig5UXRQ/media/IMG_3870.jpeg'); }
+  .clt4 .atelier .quote-mark { font-family:var(--serif); font-style:italic; font-size:80px; color:var(--gold); line-height:0.5; opacity:0.8; }
+  .clt4 .atelier-eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:0.32em; color:var(--gold); margin-left:18px; }
+  .clt4 .atelier blockquote { font-family:var(--serif); font-style:italic; font-size:clamp(24px,2.6vw,34px); line-height:1.45; margin:30px 0; color:var(--cream); font-weight:400; }
+  .clt4 .atelier .attrib { font-family:var(--mono); font-size:11px; letter-spacing:0.22em; color:var(--cream); opacity:0.7; }
+  .clt4 .atelier .attrib::before { content:"— "; color:var(--gold); }
+  .clt4 .paths { padding:120px 4%; background:var(--ink-2); }
+  .clt4 .paths-head { text-align:center; max-width:880px; margin:0 auto 70px; }
+  .clt4 .paths-head h2 { color:var(--cream); }
+  .clt4 .paths-head .lede { margin-top:24px; max-width:680px; margin-left:auto; margin-right:auto; }
+  .clt4 .paths-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:1280px; margin:0 auto; }
+  @media (max-width:880px) { .clt4 .paths-grid { grid-template-columns:1fr; } }
+  .clt4 .door { background:rgba(255,255,255,0.02); border:1px solid var(--line); padding:48px 40px; transition:border-color .3s; }
+  .clt4 .door:hover { border-color:var(--gold); }
+  .clt4 .door .door-mono { font-family:var(--mono); font-size:11px; letter-spacing:0.32em; color:var(--gold); margin-bottom:24px; }
+  .clt4 .door h3 { font-family:var(--serif); font-style:italic; font-size:clamp(30px,3.4vw,44px); margin:0 0 22px; color:var(--cream); line-height:1.05; font-weight:500; }
+  .clt4 .door h3 em { color:var(--gold-2); }
+  .clt4 .door p { color:var(--cream); opacity:0.78; font-size:15px; line-height:1.85; margin:0 0 26px; font-weight:300; }
+  .clt4 .door ul { list-style:none; padding:0; margin:0 0 32px; }
+  .clt4 .door li { padding:10px 0 10px 22px; position:relative; color:var(--cream); opacity:0.85; font-size:14px; line-height:1.6; border-bottom:1px solid var(--line); }
+  .clt4 .door li::before { content:"—"; position:absolute; left:0; color:var(--gold); }
+  .clt4 .door li:last-child { border-bottom:none; }
+  .clt4 .how { padding:120px 4%; background:var(--ink); }
+  .clt4 .how-head { text-align:center; max-width:780px; margin:0 auto 70px; }
+  .clt4 .how-head h2 { color:var(--cream); }
+  .clt4 .how-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:50px; }
+  @media (max-width:880px) { .clt4 .how-grid { grid-template-columns:1fr; } }
+  .clt4 .step-num { font-family:var(--mono); font-size:11px; letter-spacing:0.32em; color:var(--gold); margin-bottom:14px; }
+  .clt4 .step h4 { font-family:var(--serif); font-style:italic; font-size:26px; margin:0 0 14px; color:var(--cream); font-weight:500; }
+  .clt4 .step p { color:var(--cream); opacity:0.72; font-size:14px; line-height:1.85; margin:0; font-weight:300; }
+  .clt4 .faq { padding:120px 4%; background:var(--ink-2); }
+  .clt4 .faq-inner { max-width:880px; margin:0 auto; }
+  .clt4 .faq-head { text-align:center; margin-bottom:60px; }
+  .clt4 .faq-head h2 { color:var(--cream); }
+  .clt4 .faq-item { border-bottom:1px solid var(--line); padding:24px 0; }
+  .clt4 .faq-q { font-family:var(--serif); font-style:italic; font-size:22px; color:var(--cream); cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:24px; font-weight:400; }
+  .clt4 .faq-q::after { content:"+"; color:var(--gold); font-size:24px; transition:transform .2s; font-weight:300; }
+  .clt4 .faq-item.open .faq-q::after { content:"−"; }
+  .clt4 .faq-a { font-size:14px; line-height:1.85; color:var(--cream); opacity:0.72; padding:14px 0 0; display:none; max-width:720px; font-weight:300; }
+  .clt4 .faq-item.open .faq-a { display:block; }
+  .clt4 .inquiry { padding:120px 4%; background:var(--ink); border-top:1px solid var(--line); }
+  .clt4 .inquiry-head { text-align:center; max-width:780px; margin:0 auto 50px; }
+  .clt4 .inquiry-head h2 { color:var(--cream); }
+  .clt4 .inquiry-frame-wrap { max-width:760px; margin:0 auto; background:var(--cream); padding:8px; }
+  .clt4 .inquiry iframe { width:100%; min-height:680px; border:none; background:var(--cream); }
+  .clt4 .statement { padding:140px 4%; background:var(--ink); text-align:center; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .clt4 .statement h2 { font-size:clamp(40px,5.6vw,80px); max-width:1100px; margin:0 auto; color:var(--cream); }
+  .clt4 .statement em { color:var(--gold-2); }
+  .clt4 .statement .lede { margin-top:30px; max-width:660px; margin-left:auto; margin-right:auto; }
+  .clt4 .statement .cta-row { margin-top:46px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .clt4 .footer { padding:80px 4% 40px; background:var(--ink); }
+  .clt4 .footer-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:50px; }
+  @media (max-width:780px) { .clt4 .footer-inner { grid-template-columns:1fr; } }
+  .clt4 .footer .brand { display:flex; gap:16px; align-items:center; margin-bottom:18px; }
+  .clt4 .footer .brand .badge { width:54px; height:54px; border:1px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-style:italic; color:var(--gold); font-size:28px; }
+  .clt4 .footer .brand .name { font-family:var(--serif); font-style:italic; color:var(--cream); font-size:24px; }
+  .clt4 .footer .brand .sub { font-family:var(--mono); font-size:10px; letter-spacing:0.32em; color:var(--cream); opacity:0.6; margin-top:4px; }
+  .clt4 .footer p { color:var(--cream); opacity:0.6; font-size:13px; line-height:1.85; margin:0 0 12px; max-width:340px; }
+  .clt4 .footer h5 { font-family:var(--mono); font-size:11px; letter-spacing:0.32em; color:var(--gold); margin:0 0 18px; font-weight:500; }
+  .clt4 .footer ul { list-style:none; padding:0; margin:0; }
+  .clt4 .footer li { padding:6px 0; font-family:var(--serif); font-style:italic; font-size:16px; color:var(--cream); opacity:0.78; }
+  .clt4 .footer li a:hover { color:var(--gold-2); }
+  .clt4 .social-row { display:flex; gap:10px; margin-top:18px; }
+  .clt4 .social-row a { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:var(--gold); font-size:11px; font-family:var(--mono); }
+  .clt4 .social-row a:hover { background:var(--gold); color:var(--ink); }
+  .clt4 .footer-meta { max-width:1200px; margin:50px auto 0; padding-top:30px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; font-family:var(--mono); font-size:10px; letter-spacing:0.22em; color:var(--cream); opacity:0.5; }
+</style>
+
+<div class="clt4">
+  <div class="stats-bar">
+    <div class="left mono">
+      <div><span class="v">N 29°44′</span> <span class="v">W 95°22′</span></div>
+      <div id="cltClock"><span class="v">HOUSTON 00:00:00</span></div>
+    </div>
+    <div class="right mono">
+      <div><span class="v">CALLIS &amp; CO · EST. MMXVIII</span></div>
+      <div><span class="v">A MONICA CALLIS PRACTICE</span></div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="#top" class="logo">
+      <span class="badge"><span>C</span></span>
+      <span class="text">
+        <div class="top">Callis</div>
+        <div class="sub">Luxury Travel Atelier</div>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="#paths">Two Doors</a>
+      <a href="#atelier">The Atelier</a>
+      <a href="#how">How It Works</a>
+      <a href="#faq">Questions</a>
+    </div>
+    <a href="#inquiry" class="nav-cta">Begin</a>
+  </nav>
+
+  <section class="hero" id="top">
+    <div class="hero-eyebrow eyebrow">A Dual-Path Invitation From Monica Callis</div>
+    <h1 class="display">Travel the <em>world</em>,<br/>or build a <em>travel empire</em>.</h1>
+    <p class="hero-lede">Callis Luxury Travel is a private travel atelier led by Monica Callis. Book a curated luxury journey — cruises, resorts, group getaways, honeymoons — or learn how to earn in the travel industry as an Independent Travel Advisor on her team. One short form routes you to the right door.</p>
+    <div class="hero-cta">
+      <a href="#inquiry" class="btn btn-gold">Begin <span class="dot"></span></a>
+      <a href="#paths" class="btn btn-ghost">Explore Both Doors</a>
+    </div>
+  </section>
+
+  <section class="atelier" id="atelier">
+    <div class="atelier-grid">
+      <div class="atelier-photo pink"></div>
+      <div>
+        <span class="quote-mark">"</span>
+        <span class="atelier-eyebrow">Chapter 02 — The Atelier</span>
+        <blockquote>I built Callis Luxury Travel for two kinds of people: the one ready for the trip of a lifetime, and the one ready to turn a love of travel into real income. I help both — personally, and with the same care I bring to every deal I close.</blockquote>
+        <div class="attrib">Monica Callis · Broker/Owner, Callis &amp; Co Realty · Founder, Callis Luxury Travel</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="paths" id="paths">
+    <div class="paths-head">
+      <div class="eyebrow">Two Doors. One Trusted Advisor.</div>
+      <h2 class="h-section" style="margin-top:18px;">Choose your <em>path</em>.</h2>
+      <p class="lede">Whether you're ready to escape — or ready to build a business that funds your escapes — there's a curated path waiting.</p>
+    </div>
+    <div class="paths-grid">
+      <div class="door">
+        <div class="door-mono">Door 01 — Travel The World</div>
+        <h3>Book a <em>luxury journey</em> with Monica.</h3>
+        <p>For the person ready to stop researching and start packing. One call, one curator, one itinerary drawn entirely around your dates, budget, and people — from solo escapes to full group trips.</p>
+        <ul>
+          <li>Cruises, all-inclusive resorts, honeymoons &amp; family trips</li>
+          <li>Group travel, destination weddings, milestone celebrations</li>
+          <li>Pre-trip checklist, countdown updates, on-trip support</li>
+          <li>Booked through a vetted host-agency supplier network</li>
+          <li>$50 trip credit for first-time clients (code LUXURY50)</li>
+        </ul>
+        <a href="#inquiry" class="btn btn-gold">Plan A Trip <span class="dot"></span></a>
+      </div>
+      <div class="door">
+        <div class="door-mono">Door 02 — Build A Travel Empire</div>
+        <h3>Become an <em>Independent Travel Advisor</em>.</h3>
+        <p>For the person ready to earn from travel — alongside an operator, not alone. Get the credentials, supplier access, training, and direct mentorship from Monica's team.</p>
+        <ul>
+          <li>Full host-agency credentials &amp; supplier portals</li>
+          <li>Training platform — booking systems, branding, marketing</li>
+          <li>Supplier specialist courses — honeymoons, cruises, family</li>
+          <li>1-on-1 mentorship + group calls + private operator community</li>
+          <li>Most new advisors take their first booking within 30 days</li>
+        </ul>
+        <a href="#inquiry" class="btn btn-gold">Earn From Travel <span class="dot"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="how-head">
+      <div class="eyebrow">The Process</div>
+      <h2 class="h-section" style="margin-top:18px;">Refined. <em>Repeatable</em>. Built around you.</h2>
+    </div>
+    <div class="how-grid">
+      <div class="step">
+        <div class="step-num">— Step 01</div>
+        <h4>Tell me your vision.</h4>
+        <p>Submit the intake below — destination, dates, vibes, budget, who's going. Or, if it's the advisor path, just check the right box. No pressure, no obligation.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">— Step 02</div>
+        <h4>Receive your curated proposal.</h4>
+        <p>For travelers: two or three options I'd actually book myself, in 24–72 hours. For future advisors: a personalized roadmap with the exact startup numbers and 30-day plan.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">— Step 03</div>
+        <h4>You pick. I deliver.</h4>
+        <p>Travelers: I book, you pack, I'm one text away the whole journey. Advisors: I onboard you, walk you through your first booking, and put you in the room.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="inquiry" id="inquiry">
+    <div class="inquiry-head">
+      <div class="eyebrow">One Short Form</div>
+      <h2 class="h-section" style="margin-top:18px;">Begin <em>here</em>.</h2>
+      <p class="lede">It routes to the right door automatically. Travelers get a curated proposal in 24–72 hours. Future advisors get a 15-minute discovery call invitation.</p>
+    </div>
+    <div class="inquiry-frame-wrap">
+      <iframe src="https://link.smartscaleconsult.com/widget/form/YVMOVubNZNneNQmtmM2O" loading="lazy" title="Callis Luxury Travel inquiry form"></iframe>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="faq-inner">
+      <div class="faq-head">
+        <div class="eyebrow">Common Questions</div>
+        <h2 class="h-section" style="margin-top:18px;">Honest <em>answers</em>.</h2>
+      </div>
+      <div class="faq-item open"><div class="faq-q">Do you charge a planning fee?</div><div class="faq-a">No. My commission comes from the supplier, not from you. You pay the same (or better) price than booking online — and you get a real human in your corner the entire trip.</div></div>
+      <div class="faq-item"><div class="faq-q">What kinds of trips do you book?</div><div class="faq-a">All-inclusive resorts, private villas, cruises, honeymoons, destination weddings, family escapes, corporate retreats, bucket-list adventures, group trips, and personal getaways. If it's travel-related, ask — I can probably build it.</div></div>
+      <div class="faq-item"><div class="faq-q">How fast can you put a proposal together?</div><div class="faq-a">For most trips, 24–72 hours after I have your details. Complex multi-stop, group, or destination-wedding itineraries can take a week. I'll set expectations the moment you submit.</div></div>
+      <div class="faq-item"><div class="faq-q">How does the $50 trip credit work?</div><div class="faq-a">Submit the form on the homepage and you'll receive a code (LUXURY50) to apply to your first booking inquiry. The credit is applied to my custom-itinerary services — one per household, valid 90 days from issue.</div></div>
+      <div class="faq-item"><div class="faq-q">Do I need travel-industry experience to become an advisor?</div><div class="faq-a">No. The training platform walks you through every booking system, supplier portal, and marketing tool — step by step. Most new advisors take their first booking within 30 days.</div></div>
+      <div class="faq-item"><div class="faq-q">How much does it cost to get started as an advisor?</div><div class="faq-a">There's a small startup investment for your host-agency credentials, training platform access, and supplier portals. We walk through the exact numbers on your discovery call — no surprises and no upsells.</div></div>
+      <div class="faq-item"><div class="faq-q">Is the advisor program a pyramid scheme or MLM?</div><div class="faq-a">No. You earn commission directly from supplier bookings — flights, hotels, cruises, packages. There's no recruiting requirement, no minimum bookings, no monthly quota. You earn from travel transactions, period.</div></div>
+      <div class="faq-item"><div class="faq-q">What support do I get from Monica directly?</div><div class="faq-a">1-on-1 onboarding, group mentorship calls, a private operator community, personal branding guidance, and direct access for booking questions. You're not handed a binder and forgotten.</div></div>
+    </div>
+  </section>
+
+  <section class="statement">
+    <h2 class="display">Travel should feel as <em>refined</em> as the people living it.</h2>
+    <p class="lede">No phone trees. No 1-800 numbers. Just one trusted advisor — and a quiet, confident itinerary built only for you.</p>
+    <div class="cta-row">
+      <a href="#inquiry" class="btn btn-gold">Begin Your Journey <span class="dot"></span></a>
+    </div>
+  </section>
+
+  <section class="footer" id="connect">
+    <div class="footer-inner">
+      <div>
+        <div class="brand">
+          <div class="badge">C</div>
+          <div>
+            <div class="name">Callis Luxury Travel</div>
+            <div class="sub">Pearland · Houston · Worldwide</div>
+          </div>
+        </div>
+        <p>A private travel atelier led by Monica Callis. Independent travel advisor partnered with a US-based host-agency network. Travel offerings subject to supplier terms.</p>
+        <p style="margin-top:14px;">monica@callisluxurytravel.com · (832) 219-9404</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/monica_callisandco/" aria-label="Instagram">IG</a>
+          <a href="https://www.facebook.com/monicacallis" aria-label="Facebook">FB</a>
+          <a href="https://www.linkedin.com/in/monicacallis/" aria-label="LinkedIn">IN</a>
+          <a href="https://www.tiktok.com/@monica_callisandco" aria-label="TikTok">TT</a>
+          <a href="https://www.youtube.com/" aria-label="YouTube">YT</a>
+        </div>
+      </div>
+      <div><h5>Wander</h5><ul><li><a href="#paths">Two Doors</a></li><li><a href="#atelier">The Atelier</a></li><li><a href="#how">How It Works</a></li><li><a href="#faq">Common Questions</a></li></ul></div>
+      <div><h5>Begin</h5><ul><li><a href="#inquiry">Plan A Trip</a></li><li><a href="#inquiry">Earn From Travel</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+    </div>
+    <div class="footer-meta">
+      <div>© 2026 Callis Luxury Travel · All rights reserved</div>
+      <div>Made with care in Pearland, TX</div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.clt4 .faq-q').forEach(function(q){
+    q.addEventListener('click', function(){
+      var item = q.closest('.faq-item');
+      if (item) item.classList.toggle('open');
+    });
+  });
+  function tick(){
+    var d = new Date();
+    var fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    var t = fmt.format(d);
+    var el = document.getElementById('cltClock');
+    if (el) el.innerHTML = '<span class="v">HOUSTON ' + t + '</span>';
+  }
+  setInterval(tick, 1000); tick();
+})();
+</script>
+
+<style>
+  .clt4-pop-overlay { position:fixed; inset:0; background:rgba(10,8,6,0.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:99998; display:none; align-items:center; justify-content:center; padding:20px; opacity:0; transition:opacity .35s ease; font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
+  .clt4-pop-overlay.show { display:flex; opacity:1; }
+  .clt4-pop { position:relative; background:#f6efe3; width:100%; max-width:580px; padding:48px 44px 36px; border:1px solid #c9a24a; }
+  .clt4-pop::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, #c9a24a, #e7c87b, #c9a24a); }
+  .clt4-pop * { box-sizing:border-box; }
+  .clt4-pop-close { position:absolute; top:12px; right:16px; background:transparent; border:none; cursor:pointer; color:#7a6f5e; font-size:22px; line-height:1; padding:6px 10px; }
+  .clt4-pop-eyebrow { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.32em; color:#a8822f; text-transform:uppercase; }
+  .clt4-pop h3 { font-family:'Cormorant Garamond', Georgia, serif; font-style:italic; font-size:38px; color:#0a0806; margin:14px 0 8px; line-height:1.1; font-weight:500; }
+  .clt4-pop h3 em { color:#a8822f; }
+  .clt4-pop p { font-size:14px; color:#7a6f5e; line-height:1.7; margin:0 0 18px; font-weight:300; }
+  .clt4-pop .code-row { background:rgba(201,162,74,0.08); border:1px dashed #c9a24a; padding:14px 24px; text-align:center; margin:18px 0 22px; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; letter-spacing:0.18em; color:#0a0806; }
+  .clt4-pop input { width:100%; padding:14px 16px; background:#fff; border:1px solid #d8d3c8; color:#0a0806; font-family:inherit; font-size:14px; outline:none; margin-bottom:10px; font-weight:300; }
+  .clt4-pop input:focus { border-color:#c9a24a; }
+  .clt4-pop-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:520px) { .clt4-pop-row { grid-template-columns:1fr; } }
+  .clt4-pop button { width:100%; padding:16px 24px; background:#c9a24a; color:#0a0806; border:none; border-radius:999px; font-family:inherit; font-weight:500; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; cursor:pointer; margin-top:10px; }
+  .clt4-pop button:hover { background:#e7c87b; }
+  .clt4-pop .fine { font-size:11px; color:#7a6f5e; text-align:center; margin-top:14px; line-height:1.5; }
+  .clt4-pop .fine a { color:#0a0806; text-decoration:underline; }
+  .clt4-pop-success { display:none; text-align:center; padding:30px 10px; }
+  .clt4-pop-success.show { display:block; }
+</style>
+
+<div class="clt4-pop-overlay" id="clt4PopOverlay">
+  <div class="clt4-pop">
+    <button class="clt4-pop-close" id="clt4PopClose">×</button>
+    <div id="clt4PopMain">
+      <div class="clt4-pop-eyebrow">— Wait, Before You Go</div>
+      <h3>Take <em>$50</em> with you.</h3>
+      <p>Toward your first curated journey. One per household, valid 90 days. Drop your name + email and I'll send the code straight to your inbox.</p>
+      <div class="code-row">LUXURY50</div>
+      <form id="clt4PopForm" novalidate>
+        <div class="clt4-pop-row">
+          <input type="text" name="first_name" placeholder="First name" required />
+          <input type="text" name="last_name" placeholder="Last name" required />
+        </div>
+        <input type="email" name="email" placeholder="Email address" required />
+        <input type="tel" name="phone" placeholder="Phone (optional)" />
+        <button type="submit" id="clt4PopBtn">Send My $50 Code →</button>
+        <div class="fine">By continuing you agree to receive emails &amp; SMS. Unsubscribe anytime.<br/><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></div>
+      </form>
+    </div>
+    <div class="clt4-pop-success" id="clt4PopSuccess">
+      <div class="clt4-pop-eyebrow" style="color:#a8822f;">— You're In</div>
+      <h3 style="color:#0a0806;">Code <em>locked in</em>.</h3>
+      <p>Watch your inbox for the next step. The code is <strong>LUXURY50</strong>, valid 90 days.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var GHL_FORM_URL = 'REPLACE_WITH_GHL_FORM_ENDPOINT';
+  var STORAGE_KEY = 'clt4_pop_seen';
+  var COOLDOWN_DAYS = 7;
+  function isMobile(){ return window.matchMedia('(max-width: 768px)').matches; }
+  function recentlySeen(){ try { var t = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10); return t && (Date.now() - t) < COOLDOWN_DAYS*86400*1000; } catch(e){ return false; } }
+  function markSeen(){ try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch(e){} }
+  var overlay = document.getElementById('clt4PopOverlay');
+  var main = document.getElementById('clt4PopMain');
+  var success = document.getElementById('clt4PopSuccess');
+  var form = document.getElementById('clt4PopForm');
+  var btn = document.getElementById('clt4PopBtn');
+  function open(){ if (recentlySeen()) return; overlay.classList.add('show'); markSeen(); }
+  function close(){ overlay.classList.remove('show'); }
+  if (!recentlySeen()) {
+    if (isMobile()) { setTimeout(open, 25000); }
+    else {
+      var armed = false; setTimeout(function(){ armed = true; }, 4000);
+      document.addEventListener('mouseleave', function(e){ if (armed && e.clientY <= 0) open(); });
+    }
+  }
+  document.getElementById('clt4PopClose').addEventListener('click', close);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); btn.disabled = true; btn.textContent = 'Sending…';
+    var d = new FormData(form), p = {};
+    d.forEach(function(v,k){ p[k] = v; });
+    p.source = 'callisluxurytravel.com/exit-intent';
+    p.tag_offer = 'popup-claimed-50'; p.coupon_code = 'LUXURY50'; p.timestamp = new Date().toISOString();
+    var done = function(){ main.style.display='none'; success.classList.add('show'); setTimeout(close, 6000); };
+    if (GHL_FORM_URL && GHL_FORM_URL.indexOf('REPLACE') === -1) {
+      fetch(GHL_FORM_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) }).then(done).catch(done);
+    } else { setTimeout(done, 600); }
+  });
+})();
+</script>
