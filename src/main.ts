@@ -246,31 +246,45 @@ async function main() {
         log('debug', 'Using per-request GHL credentials from headers', { locationId: reqLocationId });
       }
 
-      // 2) Body-based routing via GHL_LOCATION_TOKENS map (Path C)
-      // a) For tools/call requests, look at args.locationId — if a sub-account
-      //    PIT is registered for that locationId, route to it.
-      // b) If no locationId in args (common when tool schemas don't expose it),
-      //    fall back to GHL_LOCATION_ID env var as the default sub-account.
+      // 2) Body-based routing via GHL_LOCATION_TOKENS map (Path C v3)
+      // a) Agency-level tools must use the agency PIT (global ghlClient).
+      //    Skip sub-account routing for these.
+      // b) Sub-account tools: look at args.locationId; fall back to
+      //    GHL_LOCATION_ID env var if args don't expose locationId.
+      const AGENCY_TOOL_NAMES = new Set([
+        'search_locations', 'create_location', 'delete_location', 'update_location', 'get_location',
+        'get_companies', 'get_company', 'create_company', 'delete_company', 'update_company',
+        'get_snapshots', 'get_snapshot', 'create_snapshot', 'create_snapshot_share_link',
+        'push_snapshot_to_subaccounts', 'get_snapshot_push_status', 'get_latest_snapshot_push',
+        'get_saas_agency_plans', 'list_saas_locations_by_company', 'get_saas_plan',
+        'list_whitelabel_integration_providers', 'create_whitelabel_integration_provider',
+      ]);
       if (!perRequestClient && Object.keys(locationTokens).length > 0) {
         try {
           const body = req.body as any;
-          let routeLocationId = body?.params?.arguments?.locationId as string | undefined;
-          let routeReason = 'args.locationId';
-          if (!routeLocationId) {
-            const defaultLocationId = process.env.GHL_LOCATION_ID;
-            if (defaultLocationId && locationTokens[defaultLocationId]) {
-              routeLocationId = defaultLocationId;
-              routeReason = 'GHL_LOCATION_ID fallback';
+          const toolName = body?.params?.name as string | undefined;
+          const isAgencyTool = !!(toolName && AGENCY_TOOL_NAMES.has(toolName));
+          if (isAgencyTool) {
+            log('debug', 'Skipping sub-account routing for agency tool', { tool: toolName });
+          } else {
+            let routeLocationId = body?.params?.arguments?.locationId as string | undefined;
+            let routeReason = 'args.locationId';
+            if (!routeLocationId) {
+              const defaultLocationId = process.env.GHL_LOCATION_ID;
+              if (defaultLocationId && locationTokens[defaultLocationId]) {
+                routeLocationId = defaultLocationId;
+                routeReason = 'GHL_LOCATION_ID fallback';
+              }
             }
-          }
-          if (routeLocationId && locationTokens[routeLocationId]) {
-            perRequestClient = new EnhancedGHLClient({
-              accessToken: locationTokens[routeLocationId],
-              baseUrl: process.env.GHL_BASE_URL || 'https://services.leadconnectorhq.com',
-              version: '2021-07-28',
-              locationId: routeLocationId,
-            });
-            log('debug', 'Using sub-account PIT from GHL_LOCATION_TOKENS', { locationId: routeLocationId, reason: routeReason });
+            if (routeLocationId && locationTokens[routeLocationId]) {
+              perRequestClient = new EnhancedGHLClient({
+                accessToken: locationTokens[routeLocationId],
+                baseUrl: process.env.GHL_BASE_URL || 'https://services.leadconnectorhq.com',
+                version: '2021-07-28',
+                locationId: routeLocationId,
+              });
+              log('debug', 'Using sub-account PIT from GHL_LOCATION_TOKENS', { locationId: routeLocationId, reason: routeReason, tool: toolName });
+            }
           }
         } catch (err: any) {
           log('warn', 'Failed to route via GHL_LOCATION_TOKENS', { error: err.message });
