@@ -1,0 +1,487 @@
+<!--
+  Callis Luxury Travel — Master Homepage v3
+  Hero brand: CALLIS LUXURY TRAVEL (the business, large)
+  Monica: face/hero photo, NOT the brand name
+  Dual-path equal-weight: Plan A Trip + Earn From Travel
+  Aesthetic mirrors monicacallis.com (cream/black/gold #c9a662, Playfair Display + Josefin Sans)
+  Content scaffold mirrors travellikeaninsider.com (re-mined 2026-05-04), in Monica's voice
+  PASTE: GHL Sites → Custom HTML/Javascript element on a full-width section.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Josefin+Sans:wght@300;400;500;600&display=swap');
+
+  .clt { --black:#0a0a0a; --cream:#f5f1ea; --cream-2:#eeede9; --paper:#fafaf7;
+         --gold:#c9a662; --gold-soft:#d6b87a; --teal:#1d5052;
+         --ink:#1a1a1a; --muted:#6b6b6b; --line:#e6e0d2;
+         --serif:'Playfair Display', Georgia, serif; --sans:'Josefin Sans','Helvetica Neue',Arial,sans-serif;
+         color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.55; font-weight:300; }
+  .clt *, .clt *::before, .clt *::after { box-sizing:border-box; }
+  .clt img { max-width:100%; display:block; }
+  .clt a { color:inherit; text-decoration:none; }
+
+  .clt-eyebrow { font-family:var(--sans); font-weight:400; letter-spacing:0.32em; text-transform:uppercase; font-size:11px; color:var(--gold); display:inline-flex; align-items:center; gap:14px; }
+  .clt-eyebrow::before { content:""; width:38px; height:1px; background:var(--gold); display:inline-block; }
+  .clt-eyebrow-c { justify-content:center; }
+  .clt-h1 { font-family:var(--serif); font-weight:700; font-size:clamp(48px, 8.4vw, 116px); letter-spacing:0.04em; line-height:0.95; margin:0; text-transform:uppercase; }
+  .clt-h2 { font-family:var(--serif); font-weight:700; font-size:clamp(34px, 4.8vw, 64px); letter-spacing:0.03em; line-height:1.05; margin:0; text-transform:uppercase; }
+  .clt-h3 { font-family:var(--serif); font-weight:600; font-size:clamp(22px, 2.4vw, 30px); letter-spacing:0.02em; line-height:1.2; margin:0; }
+  .clt-italic { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(18px,1.6vw,24px); line-height:1.5; }
+  .clt-lede { font-family:var(--sans); font-weight:300; font-size:17px; line-height:1.75; color:var(--muted); }
+
+  .clt-btn { display:inline-block; padding:16px 36px; border-radius:999px; font-family:var(--sans); font-weight:500; letter-spacing:0.18em; text-transform:uppercase; font-size:12px; transition:all .25s ease; cursor:pointer; border:1px solid var(--gold); }
+  .clt-btn-gold { background:var(--gold); color:#000; }
+  .clt-btn-gold:hover { background:var(--gold-soft); }
+  .clt-btn-ghost { background:transparent; color:#fff; }
+  .clt-btn-ghost:hover { background:rgba(201,166,98,0.16); }
+  .clt-btn-dark { background:#000; color:var(--gold); border-color:#000; }
+
+  .clt-nav { position:absolute; top:0; left:0; right:0; z-index:10; padding:26px 6%; display:flex; align-items:center; justify-content:space-between; }
+  .clt-logo { display:flex; align-items:center; gap:14px; color:#fff; }
+  .clt-logo-mono { width:50px; height:50px; border:1px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--serif); color:var(--gold); font-size:28px; font-weight:700; line-height:1; }
+  .clt-logo-text { font-family:var(--serif); color:#fff; line-height:1; }
+  .clt-logo-text .top { font-size:14px; letter-spacing:0.22em; font-weight:700; text-transform:uppercase; }
+  .clt-logo-text .sub { font-size:9px; letter-spacing:0.32em; color:var(--gold); margin-top:5px; text-transform:uppercase; font-family:var(--sans); }
+  .clt-nav-links { display:flex; gap:30px; align-items:center; }
+  .clt-nav-links a { color:#fff; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; font-weight:400; }
+  .clt-nav-links a:hover { color:var(--gold); }
+  @media (max-width:880px) { .clt-nav-links { display:none; } }
+
+  .clt-hero { position:relative; min-height:100vh; padding:120px 6% 80px; color:#fff; text-align:center;
+              display:flex; align-items:center; justify-content:center;
+              background:linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.85) 100%),
+                         url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+              background-color:#000; }
+  .clt-hero-inner { max-width:1200px; }
+  .clt-hero .clt-eyebrow { color:#fff; opacity:0.92; margin-bottom:30px; }
+  .clt-hero .clt-eyebrow::before { background:#fff; }
+  .clt-hero h1 { color:#fff; }
+  .clt-hero .clt-italic { color:#f5f1ea; max-width:780px; margin:32px auto 0; font-size:clamp(18px,1.7vw,24px); }
+  .clt-hero-cta { margin-top:46px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .clt-hero-line { font-family:var(--sans); font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); margin-top:34px; opacity:0.8; }
+  .clt-hero-scroll { position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:var(--gold); font-size:11px; letter-spacing:0.3em; text-transform:uppercase; }
+
+  .clt-positioning { background:var(--cream); padding:100px 6%; text-align:center; }
+  .clt-positioning-inner { max-width:880px; margin:0 auto; }
+  .clt-positioning h2 { color:var(--ink); margin-bottom:30px; }
+  .clt-positioning p { font-family:var(--sans); font-weight:300; font-size:18px; line-height:1.85; color:var(--ink); margin:0 0 22px; }
+  .clt-positioning em { font-family:var(--serif); font-style:italic; color:var(--gold); font-weight:500; }
+
+  .clt-paths { background:var(--cream); padding:30px 6% 100px; }
+  .clt-paths-head { text-align:center; max-width:780px; margin:0 auto 64px; }
+  .clt-paths-head h2 { color:var(--ink); margin-top:18px; }
+  .clt-paths-head p { margin-top:22px; }
+  .clt-paths-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:1280px; margin:0 auto; }
+  @media (max-width:880px) { .clt-paths-grid { grid-template-columns:1fr; } }
+  .clt-card { position:relative; min-height:560px; overflow:hidden; }
+  .clt-card-bg { position:absolute; inset:0; background-size:cover; background-position:center; }
+  .clt-card-bg::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.86) 100%); }
+  .clt-card-body { position:relative; height:100%; min-height:560px; display:flex; flex-direction:column; justify-content:flex-end; padding:44px; color:#fff; }
+  .clt-card .clt-eyebrow { color:var(--gold); margin-bottom:18px; }
+  .clt-card .clt-eyebrow::before { background:var(--gold); }
+  .clt-card h3 { color:#fff; font-size:clamp(28px, 3vw, 40px); margin-bottom:14px; text-transform:uppercase; }
+  .clt-card p { color:#eee; font-size:15px; line-height:1.7; margin:0 0 26px; max-width:520px; font-weight:300; }
+  .clt-card .clt-btn { align-self:flex-start; }
+  .clt-card-traveler .clt-card-bg { background-image:url('https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1400&q=80'); }
+  .clt-card-agent .clt-card-bg { background-image:url('https://images.unsplash.com/photo-1605538883669-825200433431?auto=format&fit=crop&w=1400&q=80'); }
+
+  .clt-meet { background:var(--cream); }
+  .clt-meet-grid { display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
+  @media (max-width:880px) { .clt-meet-grid { grid-template-columns:1fr; } }
+  .clt-meet-photo { background-image:url('https://media-production.lp-cdn.com/media/02808d6d-9bc1-4ecf-a5db-db5852968d9b'); background-size:cover; background-position:center; min-height:620px; }
+  .clt-meet-text { background:#0a0a0a; color:#fff; padding:80px 64px; display:flex; flex-direction:column; justify-content:center; }
+  .clt-meet-text .clt-eyebrow { color:var(--gold); margin-bottom:16px; }
+  .clt-meet-text h2 { color:#fff; margin-bottom:28px; }
+  .clt-meet-text p { color:#cfcfcf; font-family:var(--sans); font-weight:300; font-size:16px; line-height:1.85; margin:0 0 18px; }
+  .clt-meet-text .signoff { font-family:var(--serif); font-style:italic; color:var(--gold); margin-top:24px; font-size:18px; }
+
+  .clt-track-trav { background:var(--paper); padding:110px 6%; }
+  .clt-track-head { text-align:center; max-width:880px; margin:0 auto 64px; }
+  .clt-track-head h2 { color:var(--ink); margin-top:18px; }
+  .clt-track-head .clt-italic { color:var(--muted); margin-top:18px; }
+
+  .clt-how-grid { max-width:1200px; margin:0 auto 80px; display:grid; grid-template-columns:repeat(3,1fr); gap:36px; }
+  @media (max-width:880px) { .clt-how-grid { grid-template-columns:1fr; } }
+  .clt-step { text-align:left; padding:0 4px; }
+  .clt-step-num { font-family:var(--serif); font-style:italic; font-size:64px; color:var(--gold); line-height:1; opacity:0.85; }
+  .clt-step h3 { font-family:var(--serif); font-size:24px; margin:18px 0 12px; color:var(--ink); text-transform:uppercase; letter-spacing:0.04em; font-weight:600; }
+  .clt-step p { font-family:var(--sans); font-weight:300; font-size:15px; color:var(--muted); line-height:1.75; margin:0; }
+
+  .clt-catalog { max-width:1100px; margin:0 auto; background:#fff; border:1px solid var(--line); padding:54px 48px; }
+  .clt-catalog-head { text-align:center; margin-bottom:32px; }
+  .clt-catalog-head .clt-eyebrow { margin-bottom:14px; }
+  .clt-catalog-head h3 { font-family:var(--serif); font-size:28px; color:var(--ink); text-transform:uppercase; letter-spacing:0.03em; }
+  .clt-catalog-head p { color:var(--muted); margin-top:14px; line-height:1.7; }
+  .clt-catalog-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px 32px; margin:30px 0 0; }
+  @media (max-width:780px) { .clt-catalog-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:520px) { .clt-catalog-grid { grid-template-columns:1fr; } }
+  .clt-catalog-grid li { list-style:none; padding:10px 0 10px 28px; position:relative; font-size:15px; color:var(--ink); border-bottom:1px solid var(--line); font-weight:300; }
+  .clt-catalog-grid li::before { content:"✓"; position:absolute; left:0; color:var(--gold); font-weight:700; font-size:14px; }
+  .clt-catalog-cta { text-align:center; margin-top:36px; }
+
+  .clt-track-agt { background:#0a0a0a; color:#fff; padding:110px 6%; }
+  .clt-track-agt .clt-track-head h2 { color:#fff; }
+  .clt-track-agt .clt-track-head .clt-italic { color:#bfbfbf; }
+  .clt-track-agt .clt-eyebrow { color:var(--gold); }
+  .clt-track-agt .clt-eyebrow::before { background:var(--gold); }
+
+  .clt-pillars { max-width:1200px; margin:0 auto 70px; display:grid; grid-template-columns:repeat(3,1fr); gap:36px; }
+  @media (max-width:880px) { .clt-pillars { grid-template-columns:1fr; } }
+  .clt-pillar { background:rgba(255,255,255,0.03); border:1px solid rgba(201,166,98,0.18); padding:36px 30px; text-align:left; }
+  .clt-pillar h3 { font-family:var(--serif); font-size:22px; color:#fff; margin:0 0 14px; text-transform:uppercase; letter-spacing:0.04em; font-weight:600; }
+  .clt-pillar h3 span { color:var(--gold); }
+  .clt-pillar p { color:#cfcfcf; font-family:var(--sans); font-weight:300; font-size:15px; line-height:1.75; margin:0; }
+
+  .clt-no-experience { max-width:900px; margin:0 auto 64px; text-align:center; padding:40px; background:rgba(201,166,98,0.06); border:1px solid rgba(201,166,98,0.25); }
+  .clt-no-experience h3 { font-family:var(--serif); font-size:30px; color:var(--gold); margin:0 0 16px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; }
+  .clt-no-experience p { color:#cfcfcf; font-family:var(--sans); font-weight:300; font-size:16px; line-height:1.75; margin:0; }
+
+  .clt-track-agt-cta { text-align:center; margin-top:50px; }
+
+  .clt-faq { background:var(--cream); padding:100px 6%; }
+  .clt-faq-inner { max-width:880px; margin:0 auto; }
+  .clt-faq-head { text-align:center; margin-bottom:54px; }
+  .clt-faq-head h2 { color:var(--ink); margin-top:18px; }
+  .clt-faq-item { border-bottom:1px solid var(--line); padding:22px 0; }
+  .clt-faq-q { font-family:var(--serif); font-size:20px; color:var(--ink); cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:24px; font-weight:600; }
+  .clt-faq-q::after { content:"+"; color:var(--gold); font-size:24px; transition:transform .2s; font-weight:400; }
+  .clt-faq-item.open .clt-faq-q::after { content:"−"; }
+  .clt-faq-a { font-family:var(--sans); font-weight:300; font-size:15px; line-height:1.8; color:var(--muted); padding:14px 0 0; display:none; }
+  .clt-faq-item.open .clt-faq-a { display:block; }
+
+  .clt-statement { background:#0a0a0a; color:#fff; padding:120px 6%; text-align:center; }
+  .clt-statement h2 { color:#fff; max-width:1100px; margin:0 auto; }
+  .clt-statement .clt-italic { color:#bfbfbf; margin-top:30px; max-width:680px; margin-left:auto; margin-right:auto; }
+  .clt-statement-cta { margin-top:46px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  .clt-news { background:var(--cream); padding:80px 6%; text-align:center; }
+  .clt-news-inner { max-width:680px; margin:0 auto; }
+  .clt-news h2 { font-family:var(--serif); font-style:italic; font-size:36px; color:var(--ink); margin:0 0 16px; }
+  .clt-news p { color:var(--muted); font-size:15px; line-height:1.7; margin:0 0 24px; font-weight:300; }
+  .clt-news-form { display:flex; gap:8px; max-width:560px; margin:0 auto; }
+  .clt-news-form input { flex:1; padding:16px 18px; border:1px solid var(--line); background:#fff; font-family:inherit; font-size:14px; color:var(--ink); }
+  .clt-news-form input:focus { outline:none; border-color:var(--gold); }
+  .clt-news-form button { padding:16px 28px; background:#000; color:#fff; border:1px solid #000; font-family:var(--sans); font-weight:500; letter-spacing:0.22em; font-size:11px; text-transform:uppercase; cursor:pointer; }
+  .clt-news-form button:hover { background:var(--gold); color:#000; border-color:var(--gold); }
+
+  .clt-footer { background:#0a0a0a; padding:80px 6% 30px; color:#fff; }
+  .clt-footer-inner { max-width:1100px; margin:0 auto; text-align:center; }
+  .clt-footer-mono { width:64px; height:64px; border:1px solid var(--gold); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-family:var(--serif); color:var(--gold); font-size:34px; font-weight:700; margin-bottom:24px; }
+  .clt-footer h3 { font-family:var(--serif); font-size:18px; letter-spacing:0.18em; text-transform:uppercase; color:#fff; margin:0 0 6px; font-weight:700; }
+  .clt-footer .sub { font-family:var(--sans); color:var(--gold); font-size:11px; letter-spacing:0.32em; text-transform:uppercase; }
+  .clt-social { margin:36px 0 28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .clt-social a { width:42px; height:42px; border-radius:50%; background:var(--gold); color:#000; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; transition:transform .2s; font-family:var(--sans); letter-spacing:0; }
+  .clt-social a:hover { transform:translateY(-2px); }
+  .clt-footer-links { margin:24px 0; display:flex; gap:24px; justify-content:center; flex-wrap:wrap; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; }
+  .clt-footer-links a { color:#cfcfcf; }
+  .clt-footer-links a:hover { color:var(--gold); }
+  .clt-footer-meta { color:#7a7a7a; font-size:12px; line-height:1.8; border-top:1px solid rgba(255,255,255,0.08); padding-top:24px; margin-top:30px; font-family:var(--sans); font-weight:300; }
+  .clt-footer-meta a { color:#bfbfbf; }
+</style>
+
+<div class="clt">
+
+  <section class="clt-hero">
+    <nav class="clt-nav">
+      <a href="#top" class="clt-logo">
+        <span class="clt-logo-mono">C</span>
+        <span class="clt-logo-text">
+          <div class="top">Callis</div>
+          <div class="sub">Luxury Travel</div>
+        </span>
+      </a>
+      <div class="clt-nav-links">
+        <a href="#travelers">Plan a Trip</a>
+        <a href="#advisors">Earn From Travel</a>
+        <a href="#meet">Meet Monica</a>
+        <a href="#faq">FAQ</a>
+        <a href="#connect">Connect</a>
+      </div>
+    </nav>
+
+    <div class="clt-hero-inner">
+      <div class="clt-eyebrow">Houston · Galveston · Worldwide</div>
+      <h1 class="clt-h1">Callis<br/>Luxury Travel</h1>
+      <div class="clt-italic">
+        Two doors. One trusted advisor. Plan a curated escape — or learn how to earn from travel yourself.
+      </div>
+      <div class="clt-hero-cta">
+        <a href="#travelers" class="clt-btn clt-btn-gold">Plan A Trip</a>
+        <a href="#advisors" class="clt-btn clt-btn-ghost">Earn From Travel</a>
+      </div>
+      <div class="clt-hero-line">Founded by Monica Callis · Pearland, TX</div>
+    </div>
+
+    <div class="clt-hero-scroll">↓ Scroll</div>
+  </section>
+
+  <section class="clt-positioning">
+    <div class="clt-positioning-inner">
+      <div class="clt-eyebrow clt-eyebrow-c">What is Callis Luxury Travel?</div>
+      <h2 class="clt-h2" style="margin-top:18px;">It's not just a booking service.<br/>It's a <em style="font-family:Playfair Display, serif; font-style:italic; color:#c9a662; font-weight:500;">two-door</em> travel home.</h2>
+      <p style="margin-top:30px;">If you're a traveler — we curate. Every itinerary is built with the same strategic precision Monica brings to every client relationship. Insider rates. Hand-picked properties. A real human in your corner from inquiry to homecoming.</p>
+      <p>If you want to earn from travel — we train. Become an independent travel advisor under the Callis Luxury Travel umbrella. Get the credentials, the supplier access, the mentorship, and the systems. Built for serious operators who value refined processes and long-term alignment.</p>
+      <p style="font-family:Playfair Display, serif; font-style:italic; color:#c9a662; font-size:18px; margin-top:30px;">No 1-800 numbers. No phone trees. Just one trusted advisor — and a business built on discretion, expertise, and elevated service.</p>
+    </div>
+  </section>
+
+  <section class="clt-paths">
+    <div class="clt-paths-head">
+      <div class="clt-eyebrow clt-eyebrow-c">Two Equal Doors</div>
+      <h2 class="clt-h2">Pick Your Path</h2>
+      <p class="clt-lede">Whether you're ready to escape or ready to build a business that funds your escapes — there's a curated path waiting.</p>
+    </div>
+
+    <div class="clt-paths-grid">
+      <div class="clt-card clt-card-traveler">
+        <div class="clt-card-bg"></div>
+        <div class="clt-card-body">
+          <div class="clt-eyebrow">Door 1 · For Travelers</div>
+          <h3 class="clt-h3">Plan A Curated Trip</h3>
+          <p>From private villas to once-in-a-lifetime cruises, every itinerary is curated with strategic precision. Insider rates. Hand-selected properties. A real human watching every detail — start to finish.</p>
+          <a href="#travelers" class="clt-btn clt-btn-gold">Start My Trip Plan →</a>
+        </div>
+      </div>
+
+      <div class="clt-card clt-card-agent">
+        <div class="clt-card-bg"></div>
+        <div class="clt-card-body">
+          <div class="clt-eyebrow">Door 2 · For Earners</div>
+          <h3 class="clt-h3">Earn From Travel</h3>
+          <p>Become an Independent Travel Advisor under the Callis Luxury Travel umbrella. Credentials. Supplier access. Mentorship. Systems. Built for people who want a refined business — not another side hustle.</p>
+          <a href="#advisors" class="clt-btn clt-btn-gold">Book My Discovery Call →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="clt-meet" id="meet">
+    <div class="clt-meet-grid">
+      <div class="clt-meet-photo" aria-label="Monica Callis"></div>
+      <div class="clt-meet-text">
+        <div class="clt-eyebrow">Meet The Founder</div>
+        <h2 class="clt-h2">Monica Callis</h2>
+        <p>Monica Callis is the founder of Callis Luxury Travel and the broker-owner of Callis &amp; Co Realty in Greater Houston. She built her career on strategic precision, fierce negotiation, and a wealth-first approach to every client relationship — and she now applies that same standard to luxury travel.</p>
+        <p>Anchored by an MBA in Finance from Texas A&amp;M, Monica approaches every itinerary the way she approaches every transaction: with data-driven insight, refined processes, and an unwavering commitment to her clients' long-term experiences.</p>
+        <p>From honeymooners and milestone celebrations to corporate retreats and bucket-list group escapes, her clients keep coming back for one reason — discretion, expertise, and long-term alignment.</p>
+        <div class="signoff">— Blessed to serve. Built to deliver.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="clt-track-trav" id="travelers">
+    <div class="clt-track-head">
+      <div class="clt-eyebrow clt-eyebrow-c">Door 1 · For Travelers</div>
+      <h2 class="clt-h2">Plan A Curated Trip</h2>
+      <div class="clt-italic">Refined. Repeatable. Built around you.</div>
+    </div>
+
+    <div class="clt-how-grid">
+      <div class="clt-step">
+        <div class="clt-step-num">01</div>
+        <h3>Tell Me Your Vision</h3>
+        <p>Reply to my email or fill the trip-inquiry form — destination, dates, vibes, budget, who's going. Whatever you've got. No pressure, no upsell, no obligation.</p>
+      </div>
+      <div class="clt-step">
+        <div class="clt-step-num">02</div>
+        <h3>Receive A Curated Proposal</h3>
+        <p>Two or three options I'd actually book myself. Insider rates, hand-picked properties, every detail considered. Same (or better) price than booking online.</p>
+      </div>
+      <div class="clt-step">
+        <div class="clt-step-num">03</div>
+        <h3>You Pick. I Book. You Pack.</h3>
+        <p>I handle every detail through your trip — and I'm one text away the whole journey. From private transfers to dinner reservations.</p>
+      </div>
+    </div>
+
+    <div class="clt-catalog">
+      <div class="clt-catalog-head">
+        <div class="clt-eyebrow clt-eyebrow-c">What I Curate</div>
+        <h3>Everything From Honeymoon Escapes To Bucket-List Adventures</h3>
+        <p>If it's travel-related, it's probably on the table. Here's the working menu — and if it's not listed, ask me anyway.</p>
+      </div>
+      <ul class="clt-catalog-grid">
+        <li>All-Inclusive Resorts</li>
+        <li>Private Villas &amp; Estates</li>
+        <li>Luxury Cruises &amp; Excursions</li>
+        <li>Honeymoons &amp; Anniversaries</li>
+        <li>Destination Weddings</li>
+        <li>Family &amp; Multi-Gen Trips</li>
+        <li>Corporate &amp; Executive Retreats</li>
+        <li>Group &amp; Friends Getaways</li>
+        <li>Solo &amp; Wellness Escapes</li>
+        <li>Bucket-List &amp; Adventure</li>
+        <li>Sport &amp; Concert Hospitality</li>
+        <li>Theme Parks &amp; Family Resorts</li>
+        <li>Staycations &amp; Galveston Coast</li>
+        <li>Flights, Car Hire &amp; Transfers</li>
+        <li>Airport Lounges &amp; VIP Service</li>
+      </ul>
+      <div class="clt-catalog-cta">
+        <a href="/trip-inquiry" class="clt-btn clt-btn-dark">Start My Trip Plan →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="clt-track-agt" id="advisors">
+    <div class="clt-track-head">
+      <div class="clt-eyebrow clt-eyebrow-c">Door 2 · For Earners</div>
+      <h2 class="clt-h2">Earn From Travel</h2>
+      <div class="clt-italic">Become an Independent Travel Advisor under Callis Luxury Travel.</div>
+    </div>
+
+    <div class="clt-pillars">
+      <div class="clt-pillar">
+        <h3><span>01.</span> Work From Anywhere</h3>
+        <p>You can run your entire travel business from your phone, laptop, or tablet — whether you're at home, in a school pickup line, or sipping rosé in Galveston. All you need is Wi-Fi and the willingness to learn. A business that fits <em>into</em> your life — not one that takes over it.</p>
+      </div>
+      <div class="clt-pillar">
+        <h3><span>02.</span> Uncapped Income</h3>
+        <p>There's no limit to how much you can earn from travel. Cover the cost of your next trip, build a second income stream, or grow a full-time online travel business. You earn commission on every booking — flights, hotels, cruises, experiences. Your income. Your pace. Your way.</p>
+      </div>
+      <div class="clt-pillar">
+        <h3><span>03.</span> Real Mentorship</h3>
+        <p>You're in business <em>for</em> yourself, but never <em>by</em> yourself. Group calls, 1-on-1 mentorship, supplier training, marketing systems, and a room of operators who actually do the work. This isn't a Facebook group — it's a refined operation.</p>
+      </div>
+    </div>
+
+    <div class="clt-no-experience">
+      <h3>No Experience? No Problem.</h3>
+      <p>Starting something new can feel daunting — that's normal. You'll get instant access to a powerful training platform: travel booking systems, personal branding, social-media marketing, and supplier specialist courses (Sandals, Royal Caribbean, Disney, honeymoon &amp; wedding specialist programs — all included). Plug-and-play, refined processes, and you're set up to take your first booking inside 30 days.</p>
+    </div>
+
+    <div class="clt-pillars" style="margin-bottom:20px;">
+      <div class="clt-pillar">
+        <h3><span>·</span> No Targets, No Pressure</h3>
+        <p>Book as much or as little as you like — it's your business, your way. You're never capped on hours or bookings. Hobby income or career income — you choose, and you can change your mind.</p>
+      </div>
+      <div class="clt-pillar">
+        <h3><span>·</span> Real Income, Real Commissions</h3>
+        <p>Suppliers pay commission on the back end — you don't mark anything up. Your clients pay the same price they'd pay anywhere; you receive the commission they were paying anyway.</p>
+      </div>
+      <div class="clt-pillar">
+        <h3><span>·</span> You Are In Safe Hands</h3>
+        <p>You're partnered with a long-standing host agency network with full booking credentials, supplier relationships, and ongoing customer-care support. Your clients are protected. Your bookings are protected. You're protected.</p>
+      </div>
+    </div>
+
+    <div class="clt-track-agt-cta">
+      <a href="/discovery-call" class="clt-btn clt-btn-gold">Book My 15-Minute Discovery Call →</a>
+    </div>
+  </section>
+
+  <section class="clt-faq" id="faq">
+    <div class="clt-faq-inner">
+      <div class="clt-faq-head">
+        <div class="clt-eyebrow clt-eyebrow-c">Have Questions?</div>
+        <h2 class="clt-h2">FAQ</h2>
+      </div>
+
+      <div class="clt-faq-item open">
+        <div class="clt-faq-q">Do you charge a planning fee?</div>
+        <div class="clt-faq-a">No. My commission comes from the supplier, not from you. You pay the same (or better) price than booking online — and you get a real human in your corner the entire trip.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">What kinds of trips do you book?</div>
+        <div class="clt-faq-a">All-inclusive resorts, private villas, cruises, honeymoons, destination weddings, family escapes, corporate retreats, bucket-list adventures, group trips, and personal getaways. If it's travel-related, ask — I can probably build it.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">How fast can you put a proposal together?</div>
+        <div class="clt-faq-a">For most trips, 24–72 hours after I have your details. Complex multi-stop, group, or destination-wedding itineraries can take a week. I'll set expectations the moment you submit.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">What if I just want flights or a hotel?</div>
+        <div class="clt-faq-a">Single-night hotel bookings or one-way flights aren't a great use of either of our time — but for full vacations, multi-night resorts, cruises, and packages, I'm absolutely your person.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">How does the $50 trip credit work?</div>
+        <div class="clt-faq-a">If you joined the email list, you'll receive a code (LUXURY50) to apply to your first booking inquiry. The credit is applied to my custom-itinerary services — one per household, valid 90 days from issue.</div>
+      </div>
+
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">Do I need travel-industry experience to become an advisor?</div>
+        <div class="clt-faq-a">No. The training platform walks you through every booking system, supplier portal, and marketing tool — step by step. Most new advisors take their first booking within 30 days.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">How much does it cost to get started?</div>
+        <div class="clt-faq-a">There's a small startup investment for your host-agency credentials, training platform access, and supplier portals. We'll walk through the exact numbers on your discovery call — there are no surprises and no upsells.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">How quickly can I start earning?</div>
+        <div class="clt-faq-a">As soon as you complete onboarding (typically 5–7 days). Most advisors take their first booking within 30 days — usually a friend, family member, or their own next trip.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">Is this a pyramid scheme or MLM?</div>
+        <div class="clt-faq-a">No. You earn commission directly from supplier bookings — flights, hotels, cruises, packages. There's no recruiting requirement, no minimum bookings, no monthly quota. You earn from travel transactions, period.</div>
+      </div>
+      <div class="clt-faq-item">
+        <div class="clt-faq-q">What support do I get from Monica directly?</div>
+        <div class="clt-faq-a">1-on-1 onboarding, group mentorship calls, a private operator community, personal branding guidance, and direct access for booking questions. You're not handed a binder and forgotten.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="clt-statement">
+    <h2 class="clt-h2">Travel Should Feel<br/>As Refined As The People Living It.</h2>
+    <div class="clt-italic">No phone trees. No 1-800 numbers. Just one trusted advisor — and a quiet, confident itinerary built only for you.</div>
+    <div class="clt-statement-cta">
+      <a href="/trip-inquiry" class="clt-btn clt-btn-gold">Plan A Trip</a>
+      <a href="/discovery-call" class="clt-btn clt-btn-ghost">Earn From Travel</a>
+    </div>
+  </section>
+
+  <section class="clt-news">
+    <div class="clt-news-inner">
+      <h2>I want insider info</h2>
+      <p>Drop your email for curated travel intel — destination guides, insider rates, and the occasional behind-the-scenes peek. We respect your inbox; unsubscribe any time.</p>
+      <form class="clt-news-form" action="/newsletter-subscribe" method="POST">
+        <input type="email" name="email" placeholder="Email address" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="clt-footer" id="connect">
+    <div class="clt-footer-inner">
+      <div class="clt-footer-mono">C</div>
+      <h3>Callis Luxury Travel</h3>
+      <div class="sub">Pearland · Houston · Galveston · Worldwide</div>
+
+      <div class="clt-social">
+        <a href="https://www.instagram.com/monica_callisandco/" aria-label="Instagram">IG</a>
+        <a href="https://www.facebook.com/monicacallis" aria-label="Facebook">FB</a>
+        <a href="https://www.linkedin.com/in/monicacallis/" aria-label="LinkedIn">IN</a>
+        <a href="https://www.tiktok.com/@monica_callisandco" aria-label="TikTok">TT</a>
+        <a href="https://www.youtube.com/" aria-label="YouTube">YT</a>
+        <a href="mailto:monica@callisluxurytravel.com" aria-label="Email">@</a>
+      </div>
+
+      <div class="clt-footer-links">
+        <a href="/trip-inquiry">Plan A Trip</a>
+        <a href="/discovery-call">Earn From Travel</a>
+        <a href="#meet">Meet Monica</a>
+        <a href="#faq">FAQ</a>
+        <a href="/contact">Contact</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+
+      <div class="clt-footer-meta">
+        <a href="mailto:monica@callisluxurytravel.com">monica@callisluxurytravel.com</a> ·
+        <a href="tel:+18322199404">(832) 219-9404</a><br/>
+        Pearland, TX · Greater Houston · Galveston · Fort Bend · Brazoria · Worldwide<br/><br/>
+        © 2026 Callis Luxury Travel. All rights reserved. · Independent travel advisor partnered with a US-based host agency network. Travel offerings subject to supplier terms.
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function(){
+    document.querySelectorAll('.clt-faq-q').forEach(function(q){
+      q.addEventListener('click', function(){
+        var item = q.closest('.clt-faq-item');
+        if (item) item.classList.toggle('open');
+      });
+    });
+  })();
+</script>
