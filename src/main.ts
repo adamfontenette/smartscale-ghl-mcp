@@ -247,20 +247,30 @@ async function main() {
       }
 
       // 2) Body-based routing via GHL_LOCATION_TOKENS map (Path C)
-      // For tools/call requests, look at args.locationId — if a sub-account
-      // PIT is registered for that locationId, route to it.
+      // a) For tools/call requests, look at args.locationId — if a sub-account
+      //    PIT is registered for that locationId, route to it.
+      // b) If no locationId in args (common when tool schemas don't expose it),
+      //    fall back to GHL_LOCATION_ID env var as the default sub-account.
       if (!perRequestClient && Object.keys(locationTokens).length > 0) {
         try {
           const body = req.body as any;
-          const bodyLocationId = body?.params?.arguments?.locationId as string | undefined;
-          if (bodyLocationId && locationTokens[bodyLocationId]) {
+          let routeLocationId = body?.params?.arguments?.locationId as string | undefined;
+          let routeReason = 'args.locationId';
+          if (!routeLocationId) {
+            const defaultLocationId = process.env.GHL_LOCATION_ID;
+            if (defaultLocationId && locationTokens[defaultLocationId]) {
+              routeLocationId = defaultLocationId;
+              routeReason = 'GHL_LOCATION_ID fallback';
+            }
+          }
+          if (routeLocationId && locationTokens[routeLocationId]) {
             perRequestClient = new EnhancedGHLClient({
-              accessToken: locationTokens[bodyLocationId],
+              accessToken: locationTokens[routeLocationId],
               baseUrl: process.env.GHL_BASE_URL || 'https://services.leadconnectorhq.com',
               version: '2021-07-28',
-              locationId: bodyLocationId,
+              locationId: routeLocationId,
             });
-            log('debug', 'Using sub-account PIT from GHL_LOCATION_TOKENS', { locationId: bodyLocationId });
+            log('debug', 'Using sub-account PIT from GHL_LOCATION_TOKENS', { locationId: routeLocationId, reason: routeReason });
           }
         } catch (err: any) {
           log('warn', 'Failed to route via GHL_LOCATION_TOKENS', { error: err.message });
