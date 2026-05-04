@@ -67,6 +67,22 @@ async function main() {
 
   const ghlClient = new EnhancedGHLClient(config);
 
+  // ── 1b. Parse GHL_LOCATION_TOKENS — sub-account PIT routing map ─
+  // Format: JSON object {"<locationId>": "<sub-account PIT>"}
+  // When a tool call arrives with a locationId argument that matches a
+  // key in this map, the server uses that location's PIT instead of the
+  // global agency PIT. Enables single-server multi-tenant agency control.
+  let locationTokens: Record<string, string> = {};
+  const locationTokensRaw = process.env.GHL_LOCATION_TOKENS;
+  if (locationTokensRaw) {
+    try {
+      locationTokens = JSON.parse(locationTokensRaw);
+      log('info', 'Loaded GHL_LOCATION_TOKENS', { locations: Object.keys(locationTokens).length });
+    } catch (err: any) {
+      log('error', 'GHL_LOCATION_TOKENS is not valid JSON; ignoring', { error: err.message });
+    }
+  }
+
   // Test connection
   try {
     await ghlClient.testConnection();
@@ -227,7 +243,28 @@ async function main() {
           version: '2021-07-28',
           locationId: reqLocationId,
         });
-        log('debug', 'Using per-request GHL credentials', { locationId: reqLocationId });
+        log('debug', 'Using per-request GHL credentials from headers', { locationId: reqLocationId });
+      }
+
+      // 2) Body-based routing via GHL_LOCATION_TOKENS map (Path C)
+      // For tools/call requests, look at args.locationId — if a sub-account
+      // PIT is registered for that locationId, route to it.
+      if (!perRequestClient && Object.keys(locationTokens).length > 0) {
+        try {
+          const body = req.body as any;
+          const bodyLocationId = body?.params?.arguments?.locationId as string | undefined;
+          if (bodyLocationId && locationTokens[bodyLocationId]) {
+            perRequestClient = new EnhancedGHLClient({
+              accessToken: locationTokens[bodyLocationId],
+              baseUrl: process.env.GHL_BASE_URL || 'https://services.leadconnectorhq.com',
+              version: '2021-07-28',
+              locationId: bodyLocationId,
+            });
+            log('debug', 'Using sub-account PIT from GHL_LOCATION_TOKENS', { locationId: bodyLocationId });
+          }
+        } catch (err: any) {
+          log('warn', 'Failed to route via GHL_LOCATION_TOKENS', { error: err.message });
+        }
       }
 
       const server = createFreshServer(perRequestClient);
