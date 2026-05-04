@@ -126,15 +126,47 @@ function inferAnnotations(toolName: string, meta?: any): ToolAnnotations {
 }
 
 /**
- * Convert JSON Schema inputSchema to a Zod passthrough object
- * We use z.object({}).passthrough() to accept any args since the
- * original schemas are JSON Schema, not Zod. The MCP SDK will
- * still send the original JSON Schema to clients.
+ * Build a Zod input shape from a tool's JSON Schema.
+ *
+ * Minimal/permissive conversion: every declared property becomes z.any()
+ * (optional unless required), so we don't accidentally reject valid args
+ * from existing callers. This exists ONLY so the published MCP schema
+ * lists the property names — clients (Cowork, Claude in Chrome, etc.)
+ * tend to strip unknown args before forwarding, so anything not in the
+ * published schema gets dropped on the wire.
+ *
+ * Always injects `locationId` (Path C v4) so sub-account routing works
+ * end-to-end: Cowork forwards locationId → server router picks the
+ * right sub-account PIT from GHL_LOCATION_TOKENS → tool runs against
+ * that sub-account.
  */
-function makeZodSchema(_jsonSchema: any): z.ZodTypeAny {
-  // Use a catch-all that accepts any object
-  // The actual validation happens in the tool handler
-  return z.object({}).passthrough();
+function buildInputShape(jsonSchema: any): z.ZodRawShape {
+  const shape: z.ZodRawShape = {};
+  const required = new Set<string>(
+    Array.isArray(jsonSchema?.required) ? jsonSchema.required : []
+  );
+
+  if (jsonSchema && jsonSchema.type === 'object' && jsonSchema.properties) {
+    for (const [key, prop] of Object.entries(jsonSchema.properties as Record<string, any>)) {
+      const desc = (prop && typeof prop === 'object' && typeof prop.description === 'string')
+        ? prop.description
+        : '';
+      let zod: z.ZodTypeAny = z.any();
+      if (desc) zod = zod.describe(desc);
+      if (!required.has(key)) zod = zod.optional();
+      shape[key] = zod;
+    }
+  }
+
+  // Always expose locationId for sub-account routing.
+  // If a tool already declared its own locationId, leave that one alone.
+  if (!('locationId' in shape)) {
+    shape.locationId = z.string().optional().describe(
+      'Sub-account locationId for routing. If omitted, server falls back to the default GHL_LOCATION_ID env var.'
+    );
+  }
+
+  return shape;
 }
 
 // ─── Tool Registry ──────────────────────────────────────────
@@ -289,6 +321,7 @@ export class ToolRegistry {
 
       const meta = (tool as any)._meta;
       const annotations = inferAnnotations(tool.name, meta);
+      const inputShape = buildInputShape((tool as any).inputSchema);
 
       try {
         server.registerTool(
@@ -296,6 +329,7 @@ export class ToolRegistry {
           {
             title: annotations.title,
             description: tool.description || '',
+            inputSchema: inputShape,
             annotations,
             _meta: meta,
           },
