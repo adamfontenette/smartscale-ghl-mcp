@@ -1,0 +1,666 @@
+<!--
+  Callis Lux Travel — Master Funnel Site (single-file embed)
+  Paste this whole file into a GoHighLevel Sites → blank page → Code element.
+  Black + gold luxury aesthetic. Mobile responsive. Dual CTA.
+
+  CTA buttons currently use anchor links (#book-trip / #become-agent). When
+  the GHL forms exist, swap href values to the GHL form-modal trigger URLs
+  OR replace the section IDs with form embed iframes.
+
+  Brand: Callis Lux Travel
+  Owner contact: monica@callisluxtravel.com  |  +1 (832) 219-9404
+-->
+
+<style>
+  :root {
+    --black: #000000;
+    --charcoal: #0a0a0a;
+    --night: #14110d;
+    --gold: #d4af37;
+    --gold-bright: #e8c878;
+    --gold-deep: #a98c2c;
+    --cream: #f5e6c8;
+    --text: #f5f5f5;
+    --text-muted: #b8b8b8;
+    --line: rgba(212,175,55,0.18);
+  }
+  /* ---------- reset / base ---------- */
+  .clt-root, .clt-root * { box-sizing: border-box; margin: 0; padding: 0; }
+  .clt-root {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--text);
+    background: var(--black);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .clt-root img { max-width: 100%; display: block; }
+  .clt-root a { color: var(--gold); text-decoration: none; transition: color .2s ease; }
+  .clt-root a:hover { color: var(--gold-bright); }
+  .clt-root h1, .clt-root h2, .clt-root h3 {
+    font-family: 'Playfair Display', 'Times New Roman', serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .clt-root h1 { font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: 1.05; }
+  .clt-root h2 { font-size: clamp(2rem, 3.6vw, 3.2rem); line-height: 1.15; margin-bottom: 1rem; }
+  .clt-root h3 { font-size: clamp(1.25rem, 1.6vw, 1.6rem); line-height: 1.25; margin-bottom: .6rem; }
+  .clt-root p { color: var(--text-muted); font-size: 1.05rem; }
+  .clt-root .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .clt-root .eyebrow {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .clt-root section { padding: 110px 0; position: relative; }
+  .clt-root .gold-line {
+    width: 60px; height: 2px; background: var(--gold);
+    margin: 0 auto 2rem; border-radius: 2px;
+  }
+  .clt-root .gold-line.left { margin: 0 0 1.5rem; }
+
+  /* ---------- buttons ---------- */
+  .clt-root .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+    padding: 16px 32px; border-radius: 6px; font-weight: 600; font-size: 1rem;
+    letter-spacing: .02em; text-decoration: none; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
+    border: 2px solid var(--gold); text-align: center;
+  }
+  .clt-root .btn:hover { transform: translateY(-2px); }
+  .clt-root .btn-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+    color: #000;
+  }
+  .clt-root .btn-gold:hover {
+    box-shadow: 0 10px 30px -10px rgba(212,175,55,0.5);
+    color: #000;
+  }
+  .clt-root .btn-outline { background: transparent; color: var(--gold); }
+  .clt-root .btn-outline:hover { background: rgba(212,175,55,0.1); color: var(--gold-bright); }
+
+  /* ---------- nav ---------- */
+  .clt-root .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 0;
+  }
+  .clt-root .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+  .clt-root .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem; font-weight: 700; letter-spacing: 0.08em;
+    color: #fff;
+  }
+  .clt-root .logo .lux { color: var(--gold); font-style: italic; }
+  .clt-root .nav-links { display: none; gap: 2rem; }
+  .clt-root .nav-links a {
+    color: var(--text-muted); font-size: 0.92rem; font-weight: 500; letter-spacing: 0.02em;
+  }
+  .clt-root .nav-links a:hover { color: var(--gold); }
+  .clt-root .nav .btn { padding: 10px 22px; font-size: 0.88rem; }
+
+  /* ---------- hero ---------- */
+  .clt-root .hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    padding: 90px 0 80px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at top right, rgba(212,175,55,0.08), transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(212,175,55,0.05), transparent 60%),
+      linear-gradient(180deg, var(--black) 0%, var(--charcoal) 100%);
+  }
+  .clt-root .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .clt-root .hero-inner { position: relative; z-index: 1; text-align: center; max-width: 920px; margin: 0 auto; }
+  .clt-root .hero-tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    color: var(--gold);
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 1.8rem;
+  }
+  .clt-root .hero h1 {
+    margin-bottom: 1.4rem;
+    background: linear-gradient(135deg, #fff 0%, var(--gold-bright) 50%, var(--gold) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .clt-root .hero h1 em { font-style: italic; color: var(--gold); -webkit-text-fill-color: var(--gold); }
+  .clt-root .hero-sub {
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    max-width: 720px; margin: 0 auto 2.6rem;
+    color: var(--text-muted);
+  }
+  .clt-root .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .clt-root .hero-meta {
+    margin-top: 2.5rem;
+    display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
+    color: var(--text-muted); font-size: 0.88rem; letter-spacing: 0.05em;
+  }
+  .clt-root .hero-meta strong { color: var(--gold); font-weight: 600; }
+
+  /* ---------- two-paths ---------- */
+  .clt-root .paths { background: var(--charcoal); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .clt-root .paths-grid { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+  .clt-root .path-card {
+    padding: 50px 36px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(212,175,55,0.04) 0%, rgba(0,0,0,0) 100%);
+    text-align: center;
+    transition: border-color .25s ease, transform .25s ease;
+  }
+  .clt-root .path-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-6px);
+  }
+  .clt-root .path-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 1.4rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; color: #000;
+  }
+  .clt-root .path-card h3 { color: #fff; margin-bottom: .6rem; font-size: 1.6rem; }
+  .clt-root .path-card .path-tagline { color: var(--gold); font-weight: 600; font-size: .95rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .clt-root .path-card p { margin-bottom: 1.8rem; }
+  .clt-root .path-card ul {
+    list-style: none; text-align: left; margin: 1.5rem auto 1.8rem; max-width: 320px;
+  }
+  .clt-root .path-card ul li {
+    padding: 8px 0 8px 28px; position: relative; color: var(--text-muted); font-size: 0.95rem;
+  }
+  .clt-root .path-card ul li::before {
+    content: '✦'; color: var(--gold); position: absolute; left: 0; top: 7px; font-size: 1rem;
+  }
+
+  /* ---------- value props ---------- */
+  .clt-root .value-grid {
+    display: grid; gap: 2rem; grid-template-columns: 1fr;
+    margin-top: 3rem;
+  }
+  .clt-root .value-card {
+    padding: 32px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: rgba(212,175,55,0.025);
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .clt-root .value-card:hover { background: rgba(212,175,55,0.06); border-color: var(--gold); }
+  .clt-root .value-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
+    border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+  }
+  .clt-root .value-card h3 { font-size: 1.2rem; margin-bottom: .5rem; }
+  .clt-root .value-card p { font-size: 0.95rem; }
+
+  /* ---------- what you can book ---------- */
+  .clt-root .book-grid {
+    display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr);
+    margin-top: 2.5rem;
+  }
+  .clt-root .book-pill {
+    padding: 22px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--charcoal);
+    text-align: center;
+    transition: border-color .2s ease, transform .15s ease;
+  }
+  .clt-root .book-pill:hover { border-color: var(--gold); transform: scale(1.02); }
+  .clt-root .book-pill .icon { font-size: 1.6rem; margin-bottom: .5rem; }
+  .clt-root .book-pill .label { font-size: .9rem; color: var(--text); font-weight: 500; }
+
+  /* ---------- testimonials ---------- */
+  .clt-root .testimonials { background: var(--charcoal); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .clt-root .testimonial-grid {
+    display: grid; gap: 1.6rem; grid-template-columns: 1fr;
+    margin-top: 3rem;
+  }
+  .clt-root .testimonial {
+    padding: 32px 28px;
+    border-radius: 10px;
+    background: var(--black);
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .clt-root .testimonial::before {
+    content: '"';
+    position: absolute; top: 0; left: 24px;
+    font-family: 'Playfair Display', serif; font-size: 5rem; line-height: 1;
+    color: var(--gold); opacity: 0.4;
+  }
+  .clt-root .testimonial-quote {
+    color: var(--text); font-size: 1rem; line-height: 1.7; margin: 1.2rem 0 1.5rem;
+    font-style: italic;
+  }
+  .clt-root .testimonial-author { display: flex; align-items: center; gap: .9rem; }
+  .clt-root .testimonial-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #000; font-weight: 700; font-size: 1rem;
+  }
+  .clt-root .testimonial-name { color: #fff; font-weight: 600; font-size: 0.95rem; }
+  .clt-root .testimonial-role { color: var(--text-muted); font-size: 0.82rem; }
+
+  /* ---------- how it works ---------- */
+  .clt-root .steps {
+    display: grid; gap: 2rem; grid-template-columns: 1fr;
+    margin-top: 3rem;
+  }
+  .clt-root .step {
+    text-align: center; padding: 24px;
+    position: relative;
+  }
+  .clt-root .step-num {
+    width: 64px; height: 64px;
+    margin: 0 auto 1.5rem;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700;
+    color: var(--gold);
+    background: var(--black);
+  }
+
+  /* ---------- faq ---------- */
+  .clt-root .faq-grid { max-width: 800px; margin: 3rem auto 0; }
+  .clt-root details {
+    border-bottom: 1px solid var(--line);
+    padding: 24px 0;
+    cursor: pointer;
+  }
+  .clt-root summary {
+    list-style: none; outline: none;
+    color: #fff; font-weight: 600; font-size: 1.1rem;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .clt-root summary::-webkit-details-marker { display: none; }
+  .clt-root summary::after {
+    content: '+'; color: var(--gold); font-size: 1.6rem; line-height: 1;
+    transition: transform .2s ease;
+  }
+  .clt-root details[open] summary::after { transform: rotate(45deg); }
+  .clt-root details > p { margin-top: 14px; color: var(--text-muted); font-size: 0.98rem; }
+
+  /* ---------- final cta ---------- */
+  .clt-root .final-cta {
+    background:
+      radial-gradient(ellipse at center, rgba(212,175,55,0.12), transparent 70%),
+      var(--black);
+    text-align: center;
+  }
+  .clt-root .final-cta h2 {
+    background: linear-gradient(135deg, #fff 0%, var(--gold-bright) 50%, var(--gold) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    max-width: 800px; margin: 0 auto 1.4rem;
+  }
+  .clt-root .final-cta p { font-size: 1.15rem; max-width: 600px; margin: 0 auto 2.6rem; }
+
+  /* ---------- footer ---------- */
+  .clt-root .footer {
+    padding: 60px 0 30px;
+    border-top: 1px solid var(--line);
+    background: var(--charcoal);
+  }
+  .clt-root .footer-grid {
+    display: grid; gap: 2.5rem; grid-template-columns: 1fr;
+    margin-bottom: 2.5rem;
+  }
+  .clt-root .footer h4 { color: #fff; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; font-family: 'Inter', sans-serif; font-weight: 600; }
+  .clt-root .footer ul { list-style: none; }
+  .clt-root .footer ul li { padding: 5px 0; }
+  .clt-root .footer ul li a { color: var(--text-muted); font-size: 0.9rem; }
+  .clt-root .footer ul li a:hover { color: var(--gold); }
+  .clt-root .footer-brand p { font-size: 0.92rem; max-width: 320px; }
+  .clt-root .footer-bottom {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    color: var(--text-muted); font-size: 0.85rem;
+  }
+  .clt-root .footer-bottom a { color: var(--text-muted); }
+  .clt-root .footer-bottom a:hover { color: var(--gold); }
+
+  /* ---------- responsive ---------- */
+  @media (min-width: 700px) {
+    .clt-root .nav-links { display: flex; }
+    .clt-root .paths-grid { grid-template-columns: repeat(2, 1fr); }
+    .clt-root .value-grid { grid-template-columns: repeat(2, 1fr); }
+    .clt-root .book-grid { grid-template-columns: repeat(4, 1fr); }
+    .clt-root .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
+    .clt-root .steps { grid-template-columns: repeat(3, 1fr); }
+    .clt-root .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  }
+  @media (min-width: 1024px) {
+    .clt-root .value-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ---------- import fonts ---------- */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap');
+</style>
+
+<div class="clt-root">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div class="logo">CALLIS <span class="lux">Lux</span> TRAVEL</div>
+      <div class="nav-links">
+        <a href="#two-paths">Two Paths</a>
+        <a href="#why-join">Why Join</a>
+        <a href="#what-you-can-book">What You Book</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a href="#final-cta" class="btn btn-gold">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="hero-tag">Luxury Travel · Real Income · Real Freedom</span>
+      <h1>Travel More. Earn More. <em>Live Lux.</em></h1>
+      <p class="hero-sub">
+        Whether you're ready to book your dream getaway — or earn from travel
+        as a home-based agent — Callis Lux Travel is your front door
+        to the luxury travel industry.
+      </p>
+      <div class="hero-cta">
+        <a href="#book-trip" class="btn btn-gold">🏝️&nbsp;&nbsp;Book Your Dream Trip</a>
+        <a href="#become-agent" class="btn btn-outline">✈️&nbsp;&nbsp;Become a Travel Agent</a>
+      </div>
+      <div class="hero-meta">
+        <span><strong>140K+</strong> trained agents in our network</span>
+        <span><strong>$0</strong> experience required</span>
+        <span><strong>White-glove</strong> client booking</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TWO PATHS -->
+  <section class="paths" id="two-paths">
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto 2rem;">
+        <span class="eyebrow">Two doors. Same destination.</span>
+        <h2>One Brand. Two Ways to Win.</h2>
+        <p>Pick the door that fits your dream — whether that's earning while you travel, or being treated like the VIP traveler you are.</p>
+      </div>
+      <div class="paths-grid">
+        <div class="path-card" id="become-agent">
+          <div class="path-icon">✈️</div>
+          <div class="path-tagline">Path 1 · For Earners</div>
+          <h3>Become a Travel Agent</h3>
+          <p>Turn your love of travel into a real income stream. No experience needed — just Wi-Fi, your phone, and a sprinkle of wanderlust.</p>
+          <ul>
+            <li>Earn commission on every booking</li>
+            <li>Book your own trips & get paid</li>
+            <li>Full training & weekly mentorship</li>
+            <li>Specialist courses (Disney, Royal Caribbean, weddings)</li>
+          </ul>
+          <a href="#become-agent-form" class="btn btn-gold">Start Earning</a>
+        </div>
+        <div class="path-card" id="book-trip">
+          <div class="path-icon">🏝️</div>
+          <div class="path-tagline">Path 2 · For Travelers</div>
+          <h3>Book Your Dream Trip</h3>
+          <p>Get the white-glove travel experience — curated holidays, weddings abroad, cruises, villas. We handle every detail. You just show up.</p>
+          <ul>
+            <li>Personalized luxury planning</li>
+            <li>Insider deals you won't find online</li>
+            <li>End-to-end booking & support</li>
+            <li>From honeymoons to bucket-list trips</li>
+          </ul>
+          <a href="#book-trip-form" class="btn btn-gold">Plan My Trip</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY JOIN -->
+  <section id="why-join">
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto;">
+        <span class="eyebrow">Why join Callis Lux Travel?</span>
+        <h2>Built for People Who Want More.</h2>
+        <p>More travel. More flexibility. More income. More yes-days. The travel industry is a $1+ trillion market — your share is already in it.</p>
+      </div>
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="value-icon">💰</div>
+          <h3>Earn on Every Booking</h3>
+          <p>Commission on flights, hotels, cruises, weddings — even your own holidays. The money was already in the booking; now it's yours.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">📱</div>
+          <h3>Run It from Anywhere</h3>
+          <p>From your sofa. From the school pickup. From a beach in Spain. All you need is Wi-Fi and the willingness to learn.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🎓</div>
+          <h3>Full Training Included</h3>
+          <p>Plug-and-play training platform, weekly Zoom calls, WhatsApp support, and 1-on-1 mentorship. Everything you need to start earning.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🌎</div>
+          <h3>Specialist Courses</h3>
+          <p>Become a Disney expert, a Royal Caribbean specialist, a wedding & honeymoon pro — for free. Niche down, earn more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU CAN BOOK -->
+  <section id="what-you-can-book" style="background: var(--charcoal); border-top: 1px solid var(--line);">
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto;">
+        <span class="eyebrow">If it's travel — you can book it</span>
+        <h2>What You Can Book.</h2>
+        <p>As a Callis Lux travel agent (or as our client), the catalog is wide open.</p>
+      </div>
+      <div class="book-grid">
+        <div class="book-pill"><div class="icon">🏖️</div><div class="label">All-Inclusive Holidays</div></div>
+        <div class="book-pill"><div class="icon">🛳️</div><div class="label">Cruises & Excursions</div></div>
+        <div class="book-pill"><div class="icon">💍</div><div class="label">Weddings & Honeymoons</div></div>
+        <div class="book-pill"><div class="icon">🏡</div><div class="label">Villas & Private Homes</div></div>
+        <div class="book-pill"><div class="icon">✈️</div><div class="label">Flights & Hotels</div></div>
+        <div class="book-pill"><div class="icon">🎟️</div><div class="label">Sports & Concerts</div></div>
+        <div class="book-pill"><div class="icon">🌍</div><div class="label">Solo Travel</div></div>
+        <div class="book-pill"><div class="icon">🪂</div><div class="label">Bucket-List Adventures</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto;">
+        <span class="eyebrow">Stories from the journey</span>
+        <h2>Real Travelers. Real Earners.</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial">
+          <p class="testimonial-quote">"Monica planned our entire 10th anniversary trip — Santorini, private chef, sunset villa. Every detail was thought of. We didn't lift a finger."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">A</div>
+            <div>
+              <div class="testimonial-name">Andrea & Marcus</div>
+              <div class="testimonial-role">Anniversary clients</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="testimonial-quote">"I started part-time, around my 9-to-5. Six months in, my travel commissions covered my mortgage. The training is unreal."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">J</div>
+            <div>
+              <div class="testimonial-name">Jasmine T.</div>
+              <div class="testimonial-role">Independent Travel Agent</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <p class="testimonial-quote">"Booked a destination wedding for 22 guests through Callis Lux. Stress-free, on-budget, and our agent earned a great commission too. Win-win."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">S</div>
+            <div>
+              <div class="testimonial-name">Sophia R.</div>
+              <div class="testimonial-role">Wedding-abroad client</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto;">
+        <span class="eyebrow">How it works</span>
+        <h2>Three Steps. Then You're In.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Book a Discovery Call</h3>
+          <p>15 minutes. We'll find out which path is right for you — earner, traveler, or both.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Get Your Roadmap</h3>
+          <p>Personalized plan based on your goals — whether you want to start earning or start packing.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Start Living Lux</h3>
+          <p>Get trained and start earning, or get planned and start traveling. We're with you the whole way.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background: var(--charcoal); border-top: 1px solid var(--line);">
+    <div class="container">
+      <div style="text-align:center; max-width:720px; margin:0 auto;">
+        <span class="eyebrow">Questions, answered</span>
+        <h2>Frequently Asked.</h2>
+      </div>
+      <div class="faq-grid">
+        <details>
+          <summary>Do I need experience to become a travel agent?</summary>
+          <p>None at all. Most of our agents start with zero industry experience. Our training platform walks you through everything — booking systems, supplier relationships, marketing, the works. If you can use a phone, you can do this.</p>
+        </details>
+        <details>
+          <summary>How much can I earn as an Independent Travel Agent?</summary>
+          <p>Income is uncapped. Some agents cover their own travel costs. Some replace their full-time income. Some build six-figure agencies. The pace and ceiling depend on you. We give you the platform — you bring the effort.</p>
+        </details>
+        <details>
+          <summary>Is this MLM or pyramid-related?</summary>
+          <p>No. You're partnered with a licensed host travel agency. You earn commission on real bookings — flights, hotels, cruises, weddings. You're a real travel professional, not selling perfumes to your friends. (You can also build a team if you want a second income stream — but it's optional.)</p>
+        </details>
+        <details>
+          <summary>If I just want to book travel, how does that work?</summary>
+          <p>Tell us where you want to go (or what kind of trip you're dreaming about). We design it, book it, and handle the details. You get insider access to deals and properties most travelers never see — and a real human concierge through the whole trip.</p>
+        </details>
+        <details>
+          <summary>How quickly can I start?</summary>
+          <p>Same week. Once you're enrolled, you get instant access to the training and booking platform. Most new agents have their first booking within their first 30 days.</p>
+        </details>
+        <details>
+          <summary>Where is Callis Lux Travel based?</summary>
+          <p>We're based in the Pearland/Houston, TX area, but we serve travelers and recruit agents nationwide. Everything is run online — calls, training, support — so location doesn't matter.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="final-cta">
+    <div class="container">
+      <span class="eyebrow">Ready to live lux?</span>
+      <h2>Pick Your Door. We'll Hold It Open.</h2>
+      <p>The fastest way to find out if this is for you is a 15-minute call. No pressure, no pitch — just clarity.</p>
+      <div class="hero-cta">
+        <a href="#book-trip-form" class="btn btn-gold">🏝️&nbsp;&nbsp;Book My Trip</a>
+        <a href="#become-agent-form" class="btn btn-outline">✈️&nbsp;&nbsp;Become an Agent</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo" style="margin-bottom:1rem;">CALLIS <span class="lux">Lux</span> TRAVEL</div>
+          <p>Luxury travel, real income, real freedom. Two paths into the travel industry — for the earner and the traveler.</p>
+        </div>
+        <div>
+          <h4>Pathways</h4>
+          <ul>
+            <li><a href="#become-agent">Become an Agent</a></li>
+            <li><a href="#book-trip">Book a Trip</a></li>
+            <li><a href="#why-join">Why Join</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:monica@callisluxtravel.com">monica@callisluxtravel.com</a></li>
+            <li><a href="tel:+18322199404">(832) 219-9404</a></li>
+            <li><a href="#" target="_blank">Instagram</a></li>
+            <li><a href="#" target="_blank">Facebook</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="clt-year"></span> Callis Lux Travel. All rights reserved.</span>
+        <span>Pearland, TX · United States</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('clt-year').textContent = new Date().getFullYear();
+</script>
