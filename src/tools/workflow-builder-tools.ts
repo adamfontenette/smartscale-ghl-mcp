@@ -10,6 +10,14 @@
  * 
  * Auth: Firebase token refresh (browser-free, no CDP needed).
  * See SKILL.md at skills/ghl-workflow-builder/SKILL.md for full schemas.
+ *
+ * TODO: WorkflowBuilderClient currently has its own internal Firebase
+ * refresh logic. A standalone, cached helper now lives at
+ * src/firebase-auth.ts (refreshFirebaseIdToken). If the in-class logic
+ * ever needs to be replaced, swap WorkflowBuilderClient.refreshFirebaseToken()
+ * to delegate to refreshFirebaseIdToken() and remove the duplicated
+ * fetch / cache code from the client. Leaving as-is for now to avoid
+ * touching working code.
  */
 
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
@@ -42,6 +50,58 @@ function error(msg: string): ToolResult {
     content: [{ type: 'text', text: msg }],
     isError: true,
   };
+}
+
+/**
+ * Build an actionable error message for callers when the workflow
+ * builder couldn't initialize. Names the missing env vars, points
+ * to where to set them (Railway), and links the docs.
+ */
+function buildInitErrorMessage(rawInitError: string | null): string {
+  const hasV2 = !!process.env.GHL_REFRESH_TOKEN || !!process.env.GHL_AUTH_REFRESH_TOKEN;
+  const hasFirebaseKey = !!process.env.GHL_FIREBASE_API_KEY;
+  const hasFirebaseRefresh = !!process.env.GHL_FIREBASE_REFRESH_TOKEN;
+
+  const missing: string[] = [];
+  if (!hasV2) {
+    if (!hasFirebaseKey) missing.push('GHL_FIREBASE_API_KEY');
+    if (!hasFirebaseRefresh) missing.push('GHL_FIREBASE_REFRESH_TOKEN');
+  }
+
+  const lines: string[] = [
+    'Workflow builder tools are unavailable: GHL internal-API auth is not configured on this server.',
+    '',
+    'Required env vars (one of these auth paths must be set):',
+    '  Path A (preferred — v2 JWT, 30-day refresh):',
+    '    - GHL_REFRESH_TOKEN  (or GHL_AUTH_REFRESH_TOKEN)',
+    '  Path B (legacy — Firebase, 1-hour ID token, auto-refreshed):',
+    '    - GHL_FIREBASE_API_KEY',
+    '    - GHL_FIREBASE_REFRESH_TOKEN',
+    '',
+  ];
+
+  if (missing.length) {
+    lines.push(`Currently missing on this deployment: ${missing.join(', ')}`);
+    lines.push('');
+  }
+
+  lines.push(
+    'To fix on Railway:',
+    '  1. Open Railway dashboard',
+    '  2. Select the smartscale-ghl-mcp service',
+    '  3. Variables tab',
+    '  4. Add the missing variable(s) above',
+    '  5. Redeploy (Railway auto-redeploys on var change)',
+    '',
+    'Capture instructions: see skills/ghl-workflow-builder/SKILL.md',
+    'Helper: src/firebase-auth.ts (refreshFirebaseIdToken with TTL cache)',
+  );
+
+  if (rawInitError && rawInitError !== 'Unknown error') {
+    lines.push('', `Raw init error: ${rawInitError}`);
+  }
+
+  return lines.join('\n');
 }
 
 // ─── Tool class ─────────────────────────────────────────────
@@ -294,10 +354,7 @@ export class WorkflowBuilderTools {
    */
   async executeWorkflowBuilderTool(name: string, params: Record<string, unknown>): Promise<ToolResult> {
     if (!this.client) {
-      return error(
-        `Workflow builder not initialized: ${this.initError || 'Unknown error'}. ` +
-        'Ensure GHL_FIREBASE_API_KEY and GHL_FIREBASE_REFRESH_TOKEN are set.'
-      );
+      return error(buildInitErrorMessage(this.initError));
     }
 
     try {
