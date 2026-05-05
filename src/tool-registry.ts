@@ -139,9 +139,15 @@ function inferAnnotations(toolName: string, meta?: any): ToolAnnotations {
  * end-to-end: Cowork forwards locationId → server router picks the
  * right sub-account PIT from GHL_LOCATION_TOKENS → tool runs against
  * that sub-account.
+ *
+ * NOTE: We type the local `shape` as a mutable `Record<string, z.ZodTypeAny>`
+ * because Zod v4 made `z.ZodRawShape` a `Readonly<...>` mapped type, which
+ * forbids index assignment (TS2542). The runtime shape is identical — we
+ * only cast back to `z.ZodRawShape` at return so the McpServer.registerTool
+ * inputSchema contract is preserved.
  */
 function buildInputShape(jsonSchema: any): z.ZodRawShape {
-  const shape: z.ZodRawShape = {};
+  const shape: Record<string, z.ZodTypeAny> = {};
   const required = new Set<string>(
     Array.isArray(jsonSchema?.required) ? jsonSchema.required : []
   );
@@ -166,7 +172,7 @@ function buildInputShape(jsonSchema: any): z.ZodRawShape {
     );
   }
 
-  return shape;
+  return shape as z.ZodRawShape;
 }
 
 // ─── Tool Registry ──────────────────────────────────────────
