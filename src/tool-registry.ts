@@ -128,12 +128,17 @@ function inferAnnotations(toolName: string, meta?: any): ToolAnnotations {
 /**
  * Build a Zod input shape from a tool's JSON Schema.
  *
- * Minimal/permissive conversion: every declared property becomes z.any()
- * (optional unless required), so we don't accidentally reject valid args
- * from existing callers. This exists ONLY so the published MCP schema
- * lists the property names — clients (Cowork, Claude in Chrome, etc.)
- * tend to strip unknown args before forwarding, so anything not in the
- * published schema gets dropped on the wire.
+ * Mostly permissive (z.any()) so we don't accidentally reject valid args
+ * from existing callers. BUT: when the schema declares a primitive scalar
+ * type — number, integer, boolean — we use z.coerce.* so MCP transports
+ * that ship those values as strings (which happens in practice) are
+ * coerced before the handler runs.
+ *
+ * This fixes errors like:
+ *   GHL API Error (422): slotInterval must be a number conforming
+ *   to the specified constraints
+ * which happen when callers pass slotInterval=45 but the JSON-RPC layer
+ * forwards "45". Strings/arrays/objects and untyped fields keep z.any().
  *
  * Always injects `locationId` (Path C v4) so sub-account routing works
  * end-to-end: Cowork forwards locationId → server router picks the
@@ -157,7 +162,22 @@ function buildInputShape(jsonSchema: any): z.ZodRawShape {
       const desc = (prop && typeof prop === 'object' && typeof prop.description === 'string')
         ? prop.description
         : '';
-      let zod: z.ZodTypeAny = z.any();
+
+      // Pick a Zod type based on the declared JSON Schema type. For scalar
+      // primitives we use z.coerce so string-encoded values (e.g. "45")
+      // get converted before the tool handler sees them. Anything else
+      // (string, array, object, mixed, missing) stays z.any() — the
+      // permissive default — to avoid rejecting calls.
+      let zod: z.ZodTypeAny;
+      const t = prop && typeof prop === 'object' ? prop.type : undefined;
+      if (t === 'number' || t === 'integer') {
+        zod = z.coerce.number();
+      } else if (t === 'boolean') {
+        zod = z.coerce.boolean();
+      } else {
+        zod = z.any();
+      }
+
       if (desc) zod = zod.describe(desc);
       if (!required.has(key)) zod = zod.optional();
       shape[key] = zod;
