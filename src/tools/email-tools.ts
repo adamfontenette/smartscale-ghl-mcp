@@ -78,6 +78,10 @@ export class EmailTools {
               description: 'Whether the template is plain text.',
               default: false
             },
+            updatedBy: {
+              type: 'string',
+              description: 'User ID of the user making the update. Defaults to GHL_USER_ID env var if not provided.'
+            },
           },
           required: ['title', 'html']
         },
@@ -133,6 +137,10 @@ export class EmailTools {
               type: 'string',
               description: 'The updated preview text for the template.'
             },
+            updatedBy: {
+              type: 'string',
+              description: 'User ID of the user making the update. Defaults to GHL_USER_ID env var if not provided.'
+            },
           },
           required: ['templateId', 'html']
         },
@@ -153,6 +161,10 @@ export class EmailTools {
             templateId: {
               type: 'string',
               description: 'The ID of the template to delete.'
+            },
+            updatedBy: {
+              type: 'string',
+              description: 'User ID of the user making the update. Defaults to GHL_USER_ID env var if not provided.'
             },
           },
           required: ['templateId']
