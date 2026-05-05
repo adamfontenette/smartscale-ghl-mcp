@@ -203,7 +203,47 @@ export class CalendarTools {
             },
             slotDuration: {
               type: 'number',
-              description: 'Updated duration of appointment slots in minutes'
+              description: 'Updated duration of appointment slots (in minutes by default; pair with slotDurationUnit to use hours)'
+            },
+            slotDurationUnit: {
+              type: 'string',
+              enum: ['mins', 'hours'],
+              description: "Unit for slotDuration ('mins' or 'hours'). Default 'mins'."
+            },
+            slotInterval: {
+              type: 'number',
+              description: 'Interval between slots. Used for creating buffer between bookings. Default unit is minutes.'
+            },
+            slotIntervalUnit: {
+              type: 'string',
+              enum: ['mins', 'hours'],
+              description: "Unit for slotInterval ('mins' or 'hours')."
+            },
+            slotBuffer: {
+              type: 'number',
+              description: 'Buffer time padded around each slot. Some calendars use this in addition to slotInterval.'
+            },
+            slotBufferUnit: {
+              type: 'string',
+              enum: ['mins', 'hours'],
+              description: "Unit for slotBuffer ('mins' or 'hours')."
+            },
+            preBuffer: {
+              type: 'number',
+              description: 'Buffer time placed BEFORE each slot.'
+            },
+            preBufferUnit: {
+              type: 'string',
+              enum: ['mins', 'hours'],
+              description: "Unit for preBuffer ('mins' or 'hours')."
+            },
+            appoinmentPerSlot: {
+              type: 'number',
+              description: 'Number of concurrent appointments per slot. NOTE: GHL API spelling is "appoinment" (sic) — this matches their schema.'
+            },
+            appoinmentPerDay: {
+              type: 'number',
+              description: 'Maximum number of appointments per day. NOTE: GHL API spelling is "appoinment" (sic).'
             },
             autoConfirm: {
               type: 'boolean',
