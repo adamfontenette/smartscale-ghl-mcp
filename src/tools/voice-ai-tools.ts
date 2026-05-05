@@ -440,7 +440,10 @@ export class VoiceAITools {
       }
 
       case 'create_voice_ai_agent': {
-        const body: Record<string, unknown> = { locationId };
+        // GHL voice AI endpoints reject `locationId` in the request body
+        // (HTTP 422: "property locationId should not exist"). The locationId
+        // is communicated via the URL query string instead.
+        const body: Record<string, unknown> = {};
         const fields = [
           'agentName', 'businessName', 'welcomeMessage', 'agentPrompt',
           'voiceId', 'language', 'patienceLevel', 'maxCallDuration',
@@ -452,7 +455,7 @@ export class VoiceAITools {
         for (const field of fields) {
           if (args[field] !== undefined) body[field] = args[field];
         }
-        return this.ghlClient.makeRequest('POST', `/voice-ai/agents`, body);
+        return this.ghlClient.makeRequest('POST', `/voice-ai/agents?locationId=${locationId}`, body);
       }
 
       case 'get_voice_ai_agent': {
@@ -462,7 +465,9 @@ export class VoiceAITools {
 
       case 'update_voice_ai_agent': {
         const agentId = args.agentId as string;
-        const body: Record<string, unknown> = { locationId };
+        // GHL rejects `locationId` in the PATCH body with HTTP 422.
+        // It is passed via the URL query string instead.
+        const body: Record<string, unknown> = {};
         const fields = [
           'agentName', 'businessName', 'welcomeMessage', 'agentPrompt',
           'voiceId', 'language', 'patienceLevel', 'maxCallDuration',
@@ -483,14 +488,15 @@ export class VoiceAITools {
       }
 
       case 'create_voice_ai_action': {
+        // GHL rejects `locationId` in the POST body with HTTP 422.
+        // It is passed via the URL query string instead.
         const body: Record<string, unknown> = {
-          locationId,
           agentId: args.agentId,
           actionType: args.actionType,
           name: args.name,
           actionParameters: args.actionParameters
         };
-        return this.ghlClient.makeRequest('POST', `/voice-ai/actions`, body);
+        return this.ghlClient.makeRequest('POST', `/voice-ai/actions?locationId=${locationId}`, body);
       }
 
       case 'get_voice_ai_action': {
@@ -500,12 +506,14 @@ export class VoiceAITools {
 
       case 'update_voice_ai_action': {
         const actionId = args.actionId as string;
-        const body: Record<string, unknown> = { locationId };
+        // GHL rejects `locationId` in the PUT body with HTTP 422.
+        // It is passed via the URL query string instead.
+        const body: Record<string, unknown> = {};
         if (args.agentId) body.agentId = args.agentId;
         if (args.actionType) body.actionType = args.actionType;
         if (args.name) body.name = args.name;
         if (args.actionParameters !== undefined) body.actionParameters = args.actionParameters;
-        return this.ghlClient.makeRequest('PUT', `/voice-ai/actions/${actionId}`, body);
+        return this.ghlClient.makeRequest('PUT', `/voice-ai/actions/${actionId}?locationId=${locationId}`, body);
       }
 
       case 'delete_voice_ai_action': {
