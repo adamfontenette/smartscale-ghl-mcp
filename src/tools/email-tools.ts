@@ -219,7 +219,12 @@ export class EmailTools {
 
   private async createEmailTemplate(params: MCPCreateEmailTemplateParams): Promise<{ success: boolean; template: any; message: string }> {
     try {
-      const response = await this.ghlClient.createEmailTemplate(params);
+      const updatedBy = (params as any).updatedBy || process.env.GHL_USER_ID || '';
+      if (!updatedBy) {
+        throw new Error('create_email_template requires updatedBy param OR GHL_USER_ID env var');
+      }
+      const enriched = { ...params, updatedBy };
+      const response = await this.ghlClient.createEmailTemplate(enriched);
       if (!response.success || !response.data) {
         throw new Error(response.error?.message || 'Failed to create email template.');
       }
@@ -251,7 +256,12 @@ export class EmailTools {
 
   private async updateEmailTemplate(params: MCPUpdateEmailTemplateParams): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await this.ghlClient.updateEmailTemplate(params);
+      const updatedBy = (params as any).updatedBy || process.env.GHL_USER_ID || '';
+      if (!updatedBy) {
+        throw new Error('update_email_template requires updatedBy param OR GHL_USER_ID env var');
+      }
+      const enriched = { ...params, updatedBy };
+      const response = await this.ghlClient.updateEmailTemplate(enriched);
       if (!response.success) {
         throw new Error(response.error?.message || 'Failed to update email template.');
       }
@@ -266,7 +276,12 @@ export class EmailTools {
 
   private async deleteEmailTemplate(params: MCPDeleteEmailTemplateParams): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await this.ghlClient.deleteEmailTemplate(params);
+      const updatedBy = (params as any).updatedBy || process.env.GHL_USER_ID || '';
+      if (!updatedBy) {
+        throw new Error('delete_email_template requires updatedBy param OR GHL_USER_ID env var');
+      }
+      const enriched = { ...params, updatedBy };
+      const response = await this.ghlClient.deleteEmailTemplate(enriched);
       if (!response.success) {
         throw new Error(response.error?.message || 'Failed to delete email template.');
       }
