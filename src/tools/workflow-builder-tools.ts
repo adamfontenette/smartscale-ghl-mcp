@@ -11,6 +11,13 @@
  * Auth: Firebase token refresh (browser-free, no CDP needed).
  * See SKILL.md at skills/ghl-workflow-builder/SKILL.md for full schemas.
  *
+ * Multi-tenant routing: every handler reads `params.locationId` (auto-exposed
+ * by the tool registry for all tools — see buildInputShape in tool-registry.ts)
+ * and forwards it down to the client. This is what makes Path C v4 work for
+ * workflow-builder tools — without it, every internal-API call would route
+ * to whichever GHL_LOCATION_ID is in the server's env, not the caller's
+ * intended sub-account. (That was the cross-location bug.)
+ *
  * TODO: WorkflowBuilderClient currently has its own internal Firebase
  * refresh logic. A standalone, cached helper now lives at
  * src/firebase-auth.ts (refreshFirebaseIdToken). If the in-class logic
@@ -50,6 +57,16 @@ function error(msg: string): ToolResult {
     content: [{ type: 'text', text: msg }],
     isError: true,
   };
+}
+
+/**
+ * Extract a non-empty locationId override from tool params, if present.
+ * Used so every workflow-builder tool routes to the caller's sub-account
+ * instead of falling back to GHL_LOCATION_ID env.
+ */
+function locFrom(params: Record<string, unknown>): string | undefined {
+  const v = params.locationId;
+  return typeof v === 'string' && v.trim() ? v.trim() : undefined;
 }
 
 /**
@@ -387,8 +404,10 @@ export class WorkflowBuilderTools {
     const name = params.name as string;
     if (!name) return error('name is required');
 
-    // Step 1: Create empty workflow
-    const { id } = await this.client!.createWorkflow(name);
+    const loc = locFrom(params);
+
+    // Step 1: Create empty workflow (in caller's sub-account)
+    const { id } = await this.client!.createWorkflow(name, loc);
 
     // Step 2: Add actions if provided
     const rawActions = params.actions as WorkflowAction[] | undefined;
@@ -400,16 +419,16 @@ export class WorkflowBuilderTools {
         actions: rawActions,
         triggers: trigger ? [trigger] : undefined,
         status: publish ? 'published' : 'draft',
-      });
+      }, loc);
     }
 
     // Step 3: Publish if requested (and not already done above)
     if (publish && !rawActions?.length && !trigger) {
-      await this.client!.publishWorkflow(id);
+      await this.client!.publishWorkflow(id, loc);
     }
 
     // Return final state
-    const workflow = await this.client!.getWorkflow(id);
+    const workflow = await this.client!.getWorkflow(id, loc);
     return success({
       message: `Workflow "${name}" created successfully`,
       workflow: {
@@ -424,7 +443,7 @@ export class WorkflowBuilderTools {
           name: t.name,
           id: t.id,
         })),
-        url: `https://app.gohighlevel.com/v2/location/${this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
+        url: `https://app.gohighlevel.com/v2/location/${loc || this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
       },
     });
   }
@@ -435,6 +454,7 @@ export class WorkflowBuilderTools {
       offset: params.offset as number | undefined,
       sortBy: params.sortBy as string | undefined,
       sortOrder: params.sortOrder as 'asc' | 'desc' | undefined,
+      locationId: locFrom(params),
     });
 
     return success({
@@ -454,7 +474,8 @@ export class WorkflowBuilderTools {
     const workflowId = params.workflowId as string;
     if (!workflowId) return error('workflowId is required');
 
-    const workflow = await this.client!.getWorkflow(workflowId);
+    const loc = locFrom(params);
+    const workflow = await this.client!.getWorkflow(workflowId, loc);
 
     return success({
       id: workflow._id,
@@ -464,7 +485,7 @@ export class WorkflowBuilderTools {
       actionCount: workflow.workflowData?.templates?.length || 0,
       actions: workflow.workflowData?.templates || [],
       triggers: workflow.triggers || [],
-      url: `https://app.gohighlevel.com/v2/location/${this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
+      url: `https://app.gohighlevel.com/v2/location/${loc || this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
     });
   }
 
@@ -472,12 +493,14 @@ export class WorkflowBuilderTools {
     const workflowId = params.workflowId as string;
     if (!workflowId) return error('workflowId is required');
 
+    const loc = locFrom(params);
+
     const workflow = await this.client!.updateWorkflow(workflowId, {
       name: params.name as string | undefined,
       actions: params.actions as WorkflowAction[] | undefined,
       triggers: params.triggers as WorkflowTrigger[] | undefined,
       status: params.status as 'draft' | 'published' | undefined,
-    });
+    }, loc);
 
     return success({
       message: `Workflow "${workflow.name}" updated successfully`,
@@ -499,7 +522,7 @@ export class WorkflowBuilderTools {
     const workflowId = params.workflowId as string;
     if (!workflowId) return error('workflowId is required');
 
-    await this.client!.deleteWorkflow(workflowId);
+    await this.client!.deleteWorkflow(workflowId, locFrom(params));
 
     return success({
       message: `Workflow ${workflowId} deleted successfully`,
@@ -511,7 +534,7 @@ export class WorkflowBuilderTools {
     const workflowId = params.workflowId as string;
     if (!workflowId) return error('workflowId is required');
 
-    const workflow = await this.client!.publishWorkflow(workflowId);
+    const workflow = await this.client!.publishWorkflow(workflowId, locFrom(params));
 
     return success({
       message: `Workflow "${workflow.name}" published successfully`,
@@ -526,8 +549,9 @@ export class WorkflowBuilderTools {
     const workflowId = params.workflowId as string;
     if (!workflowId) return error('workflowId is required');
 
+    const loc = locFrom(params);
     const newName = params.newName as string | undefined;
-    const workflow = await this.client!.cloneWorkflow(workflowId, newName);
+    const workflow = await this.client!.cloneWorkflow(workflowId, newName, loc);
 
     return success({
       message: `Workflow cloned as "${workflow.name}"`,
@@ -538,7 +562,7 @@ export class WorkflowBuilderTools {
         status: workflow.status,
         version: workflow.version,
         actionCount: workflow.workflowData?.templates?.length || 0,
-        url: `https://app.gohighlevel.com/v2/location/${this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
+        url: `https://app.gohighlevel.com/v2/location/${loc || this.client!.getLocationId()}/automation/workflow/${workflow._id}`,
       },
     });
   }
