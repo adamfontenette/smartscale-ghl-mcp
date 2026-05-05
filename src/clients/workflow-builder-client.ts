@@ -6,6 +6,14 @@
  * 
  * The public GHL API only lists workflows — this client can CREATE, UPDATE, DELETE,
  * PUBLISH, and CLONE workflows with full action/trigger support.
+ *
+ * Multi-tenant: every method that hits a /{locationId}/... endpoint accepts an
+ * optional `locationId` argument that overrides the env-default. Path C routing
+ * forwards the caller's locationId as a top-level tool arg, and the workflow
+ * builder tool layer passes it through here. Without this, all internal-API
+ * calls would route to whichever location is in GHL_LOCATION_ID env, regardless
+ * of which sub-account the caller meant — which is exactly the bug we just hit
+ * (403 because /MFx3HmvCwg6AJHeBhlCM/{id} was used instead of Monica's).
  */
 
 import { randomUUID } from 'crypto';
@@ -88,6 +96,15 @@ export class WorkflowBuilderClient {
 
   constructor(config: WorkflowBuilderConfig) {
     this.config = config;
+  }
+
+  /**
+   * Resolve effective locationId. Per-call argument wins over env default.
+   * This is what fixes the cross-location bug: the caller's locationId always
+   * routes the URL, never the env fallback.
+   */
+  private resolveLocationId(locationId?: string): string {
+    return (locationId && locationId.trim()) ? locationId.trim() : this.config.locationId;
   }
 
   /**
@@ -301,11 +318,13 @@ export class WorkflowBuilderClient {
 
   /**
    * Create an empty workflow.
+   * @param locationId optional override; falls back to env default
    */
-  async createWorkflow(name: string): Promise<{ id: string }> {
+  async createWorkflow(name: string, locationId?: string): Promise<{ id: string }> {
+    const loc = this.resolveLocationId(locationId);
     const { data } = await this.request<{ id: string }>(
       'POST',
-      `/${this.config.locationId}`,
+      `/${loc}`,
       { name }
     );
     return data;
@@ -313,34 +332,39 @@ export class WorkflowBuilderClient {
 
   /**
    * Get a workflow with full workflowData (actions, triggers, etc.)
+   * @param locationId optional override; falls back to env default
    */
-  async getWorkflow(workflowId: string): Promise<WorkflowFull> {
+  async getWorkflow(workflowId: string, locationId?: string): Promise<WorkflowFull> {
+    const loc = this.resolveLocationId(locationId);
     const { data } = await this.request<WorkflowFull>(
       'GET',
-      `/${this.config.locationId}/${workflowId}`
+      `/${loc}/${workflowId}`
     );
     return data;
   }
 
   /**
    * List workflows with full data.
+   * @param opts.locationId optional override; falls back to env default
    */
   async listWorkflows(opts?: {
     limit?: number;
     offset?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
+    locationId?: string;
   }): Promise<{ rows: WorkflowListItem[]; total: number }> {
     const limit = opts?.limit ?? 50;
     const offset = opts?.offset ?? 0;
     const sortBy = opts?.sortBy ?? 'name';
     const sortOrder = opts?.sortOrder ?? 'asc';
+    const loc = this.resolveLocationId(opts?.locationId);
 
     const query = `type=workflow&limit=${limit}&offset=${offset}&sortBy=${sortBy}&sortOrder=${sortOrder}&includeCustomObjects=true&includeObjectiveBuilder=true`;
 
     const { data } = await this.request<{ rows: WorkflowListItem[]; total: number }>(
       'GET',
-      `/${this.config.locationId}/list?${query}`
+      `/${loc}/list?${query}`
     );
     return data;
   }
@@ -348,6 +372,7 @@ export class WorkflowBuilderClient {
   /**
    * Update a workflow — adds/replaces actions, triggers, status, etc.
    * Always GETs the current version first to avoid version conflicts.
+   * @param locationId optional override; falls back to env default
    */
   async updateWorkflow(
     workflowId: string,
@@ -357,10 +382,13 @@ export class WorkflowBuilderClient {
       actions?: WorkflowAction[];
       triggers?: WorkflowTrigger[];
       deletedSteps?: string[];
-    }
+    },
+    locationId?: string
   ): Promise<WorkflowFull> {
-    // Get current state for version
-    const current = await this.getWorkflow(workflowId);
+    const loc = this.resolveLocationId(locationId);
+
+    // Get current state for version (use the same locationId)
+    const current = await this.getWorkflow(workflowId, loc);
 
     // Build action chain with next/parentKey if raw actions provided
     const actions = update.actions
@@ -409,35 +437,40 @@ export class WorkflowBuilderClient {
       meta: {},
     };
 
-    await this.request('PUT', `/${this.config.locationId}/${workflowId}`, body);
+    await this.request('PUT', `/${loc}/${workflowId}`, body);
 
-    // Return fresh state
-    return this.getWorkflow(workflowId);
+    // Return fresh state from the same location
+    return this.getWorkflow(workflowId, loc);
   }
 
   /**
    * Delete a workflow.
+   * @param locationId optional override; falls back to env default
    */
-  async deleteWorkflow(workflowId: string): Promise<void> {
-    await this.request('DELETE', `/${this.config.locationId}/${workflowId}`);
+  async deleteWorkflow(workflowId: string, locationId?: string): Promise<void> {
+    const loc = this.resolveLocationId(locationId);
+    await this.request('DELETE', `/${loc}/${workflowId}`);
   }
 
   /**
    * Publish a workflow (set status to published).
+   * @param locationId optional override; falls back to env default
    */
-  async publishWorkflow(workflowId: string): Promise<WorkflowFull> {
-    return this.updateWorkflow(workflowId, { status: 'published' });
+  async publishWorkflow(workflowId: string, locationId?: string): Promise<WorkflowFull> {
+    return this.updateWorkflow(workflowId, { status: 'published' }, locationId);
   }
 
   /**
    * Clone a workflow: GET → create new → PUT with same actions/triggers.
+   * @param locationId optional override; falls back to env default
    */
-  async cloneWorkflow(workflowId: string, newName?: string): Promise<WorkflowFull> {
-    const source = await this.getWorkflow(workflowId);
+  async cloneWorkflow(workflowId: string, newName?: string, locationId?: string): Promise<WorkflowFull> {
+    const loc = this.resolveLocationId(locationId);
+    const source = await this.getWorkflow(workflowId, loc);
     const name = newName || `${source.name} (copy)`;
 
-    // Create empty workflow
-    const { id: newId } = await this.createWorkflow(name);
+    // Create empty workflow in the same location
+    const { id: newId } = await this.createWorkflow(name, loc);
 
     // Remap action IDs to new UUIDs
     const idMap = new Map<string, string>();
@@ -484,11 +517,11 @@ export class WorkflowBuilderClient {
       },
     }));
 
-    // Update with cloned data
+    // Update with cloned data — same location
     return this.updateWorkflow(newId, {
       actions: clonedActions,
       triggers: clonedTriggers.length > 0 ? clonedTriggers : undefined,
-    });
+    }, loc);
   }
 
   // ─── Helpers ────────────────────────────────────────────
@@ -530,7 +563,7 @@ export class WorkflowBuilderClient {
   }
 
   /**
-   * Get location ID being used.
+   * Get default location ID being used (env fallback).
    */
   getLocationId(): string {
     return this.config.locationId;
