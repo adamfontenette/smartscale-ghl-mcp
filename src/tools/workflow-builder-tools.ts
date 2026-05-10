@@ -70,6 +70,35 @@ function locFrom(params: Record<string, unknown>): string | undefined {
 }
 
 /**
+ * Some MCP transports serialize array/object tool args as JSON strings.
+ * The registry's Zod coercion only handles numbers/booleans, so structured
+ * fields can arrive as strings and explode the moment something tries to
+ * .map() over them. This walks the documented array/object fields and
+ * JSON.parses them in-place when they're strings. Anything that isn't a
+ * string, or fails to parse, is left untouched — so correctly-typed
+ * payloads behave exactly as before.
+ */
+function coerceJsonFields(
+  params: Record<string, unknown>,
+  fields: string[],
+): Record<string, unknown> {
+  for (const f of fields) {
+    const v = params[f];
+    if (typeof v === 'string') {
+      const trimmed = v.trim();
+      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        try {
+          params[f] = JSON.parse(trimmed);
+        } catch {
+          // leave as-is; downstream will surface a clear validation error
+        }
+      }
+    }
+  }
+  return params;
+}
+
+/**
  * Build an actionable error message for callers when the workflow
  * builder couldn't initialize. Names the missing env vars, points
  * to where to set them (Railway), and links the docs.
@@ -373,6 +402,11 @@ export class WorkflowBuilderTools {
     if (!this.client) {
       return error(buildInitErrorMessage(this.initError));
     }
+
+    // Coerce JSON-stringified structured fields back into objects/arrays.
+    // Some MCP transports forward array/object args as strings; without this
+    // step, .length / .map calls on those fields explode at runtime.
+    coerceJsonFields(params, ['actions', 'trigger', 'triggers']);
 
     try {
       switch (name) {
